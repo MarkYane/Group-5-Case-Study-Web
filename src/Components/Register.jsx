@@ -74,7 +74,7 @@ function Register() {
                     <TextField
                         variant="outlined"
                         type={showPassword ? 'text' : 'password'}
-                        label="Password"
+                        label="Enter password"
                         InputProps={{
                             endAdornment: (
                                 <InputAdornment position="end">
