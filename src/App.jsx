@@ -4,8 +4,8 @@ import LoginPage from './Components/Login.jsx'
 import RegisterPage from './Components/Register.jsx'
 import {createBrowserRouter, RouterProvider} from 'react-router-dom'
 import Dashboard from './Components/Dashboard.jsx'
-
-
+import Patient from './Components/PatientTab.jsx'
+import Profile from './Components/Profile.jsx'
 function App() {
 
   const [token, setToken] = useState(false)
@@ -32,7 +32,15 @@ function App() {
     },
     {
         path:'/dashboard',
-        element: token ? <Dashboard token={setToken}/> : <LoginPage setToken={setToken}/>
+        element: token ? <Dashboard token={token}/> : <LoginPage setToken={setToken}/>
+    },
+    {
+      path:'/patients',
+      element: <Patient />
+    },
+    {
+      path:'/profile',
+      element: token ? <Profile token={token}/> : <LoginPage setToken={setToken}/>
     }
   ])
 

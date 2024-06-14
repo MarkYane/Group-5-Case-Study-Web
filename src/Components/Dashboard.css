@@ -6,8 +6,8 @@
 
 .material-symbols-outlined{
     font-size: 5rem;
-    color: #ffffff;
     font-weight: 100;
+    text-decoration: none;
 }
 
 #logout{
@@ -49,3 +49,9 @@
     border-radius: 50%;
     margin-left: 8%
 }
+
+.linkNavigation{
+    text-decoration: none;
+    color: inherit
+}
+

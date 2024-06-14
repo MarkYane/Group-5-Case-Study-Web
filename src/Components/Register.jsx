@@ -32,9 +32,14 @@ function Register() {
         try{
             const { data, error } = await supabase.auth.signUp({
                 email: formData.email,
-                fullname: formData.fullName,
                 password: formData.password,
-                contactnumber: formData.contactNumber,
+                options: {
+                    data:{
+                        fullname: formData.fullName,
+                        contactnumber: formData.contactNumber,
+                    }
+                }
+                
             })
             if(error) throw error
 

@@ -32,7 +32,9 @@ function Login({setToken}) {
             })
             if(error) throw error
             setToken(data)
+            
             navigate('/dashboard')
+            
         }catch(error){
             alert(error)
         }

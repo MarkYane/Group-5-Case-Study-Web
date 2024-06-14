@@ -2,16 +2,12 @@ import { Box, Button, Typography, List, ListItem, ListItemText } from '@mui/mate
 import './Dashboard.css'
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
 import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
-import { Navigate, useNavigate } from 'react-router-dom';
-Navigate
+import { Link, Navigate, useNavigate, useLocation } from 'react-router-dom';
+import DashboardNavigation from './Navigations/DashboardNavigation';
 function Dashboard({token}){
     // token.user.user_metadata.FULLNAME - change FULLNAME to whatever user data u want to access
     const numb = 4;
     let navigate = useNavigate()
-    function handleLogout(){
-        sessionStorage.removeItem('token')
-        navigate('/')
-    }
     const menuItems = [
         {
             text: 'Patients',
@@ -19,11 +15,11 @@ function Dashboard({token}){
         },
         {
             text: 'Staff',
-            path: '/staff'
+            path: '/staffs'
         },
         {
             text: 'Ward',
-            path: '/ward'
+            path: '/wards'
         },
         {
             text: 'Supplies',
@@ -41,69 +37,7 @@ function Dashboard({token}){
                 flexWrap: 'wrap',
                 alignContent: 'flex-start'
             }}>
-                {/* ----- START ------ Sidebar */}
-                <Box sx={{
-                    height: '100vh',
-                    width: '7%',
-                    backgroundImage: 'linear-gradient(#2CAFA4, #0194D3)',
-                    position: 'fixed',
-                    display: 'flex',
-                    flexDirection: 'column'
-                }}>
-                    <Button sx={{
-                        marginTop: '50%'
-                    }}>
-                        <Typography>
-                        <i className="material-symbols-outlined">
-                            person
-                        </i>
-                        </Typography>
-                    </Button>
-                    <Button sx={{
-                        marginTop: '30%'
-                    }}>
-                        <Typography>
-                        <i className="material-symbols-outlined">
-                            home
-                        </i>
-                        </Typography>
-                    </Button>
-                    <Button onClick={handleLogout} sx={{
-                        marginTop: '620%'
-                    }}>
-                        <Typography>
-                        <i className="material-symbols-outlined" id='logout'>
-                            logout
-                        </i>
-                        </Typography>
-                    </Button>
-                </Box>
-
-                {/* ------ END ----- Sidebar */}
-                
-                {/* ------ START ------ Navigation Bar */}
-                <Box sx={{
-                    backgroundColor: 'white',
-                    height: '7vh',
-                    width: '90%',
-                    marginLeft: '12%',
-                    marginRight: '5%',
-                    marginTop: '3%',
-                    display: 'flex'
-                    
-                }}>
-
-                {menuItems.map(item => (
-                    <Button sx={{
-                        flexGrow: 1,
-                        fontFamily: 'Nunito Sans, Sans-serif',
-                        fontSize: '1.5rem',
-                        color: 'black'
-                    }} key={item.text}>{item.text}</Button>
-                ))}
-                </Box>
-
-                {/* ------ END ------ Navigation Bar */}
+                <DashboardNavigation/>
 
                 {/*Dashboard Box  */}
                 <Box sx={{ 
