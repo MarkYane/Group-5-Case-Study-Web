@@ -26,6 +26,24 @@ function Register() {
             }
         })
     }
+
+    async function handleSubmit(e){
+        e.preventDefault()
+        try{
+            const { data, error } = await supabase.auth.signUp({
+                email: formData.email,
+                fullname: formData.fullName,
+                password: formData.password,
+                contactnumber: formData.contactNumber,
+            })
+            if(error) throw error
+
+            alert('Check your email for verification link')
+
+        }catch(error){
+            alert(error)
+        }
+    }
     return (
         <>
             <Box sx={{
@@ -53,6 +71,7 @@ function Register() {
                     paddingBottom: '4.5%'
                 }}>
 
+                    <form onSubmit={handleSubmit}>
                     <Typography variant='h5' sx={{
                         fontFamily: 'Nunito Sans, sans-serif',
                         color: '#5E6368',
@@ -118,8 +137,9 @@ function Register() {
                         marginBottom: '0'
                     }}>
                     </TextField>
+                   
 
-                    <Button variant="contained" sx={{
+                    <Button type='submit' variant="contained" sx={{
                         marginTop: '15%',
                         width: '98%',
                         paddingTop: '4%',
@@ -128,7 +148,7 @@ function Register() {
                         fontFamily: 'Nunito Sans, Sans-serif',
                         fontSize: '1.2rem'
                     }}>Create Account</Button>
-
+                     </form>
                     <Typography variant='h6' sx={{
                         textAlign: 'center',
                         marginTop: '5%',

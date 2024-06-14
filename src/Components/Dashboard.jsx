@@ -2,8 +2,16 @@ import { Box, Button, Typography, List, ListItem, ListItemText } from '@mui/mate
 import './Dashboard.css'
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
 import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
-function Dashboard(){
+import { Navigate, useNavigate } from 'react-router-dom';
+Navigate
+function Dashboard({token}){
+    // token.user.user_metadata.FULLNAME - change FULLNAME to whatever user data u want to access
     const numb = 4;
+    let navigate = useNavigate()
+    function handleLogout(){
+        sessionStorage.removeItem('token')
+        navigate('/')
+    }
     const menuItems = [
         {
             text: 'Patients',
@@ -60,7 +68,7 @@ function Dashboard(){
                         </i>
                         </Typography>
                     </Button>
-                    <Button sx={{
+                    <Button onClick={handleLogout} sx={{
                         marginTop: '620%'
                     }}>
                         <Typography>

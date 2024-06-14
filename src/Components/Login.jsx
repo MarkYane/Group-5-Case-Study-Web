@@ -4,9 +4,14 @@ import IconButton from '@mui/material/IconButton';
 import InputAdornment from '@mui/material/InputAdornment';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import './Login.css'
-function Login() {
+import { supabase } from '../client';
+import { Navigate } from 'react-router-dom';
+
+function Login({setToken}) {
+
+    let navigate = useNavigate()
     const [showPassword, setShowPassword] = useState(false);
 
     const handleTogglePassword = () => {
@@ -16,6 +21,22 @@ function Login() {
     const [formData, setFormData] = useState({
         email:'', password:''
     })
+
+    async function handleSubmit(e){ 
+        e.preventDefault()
+        try{
+            
+            const { data, error } = await supabase.auth.signInWithPassword({
+                email: formData.email,
+                password: formData.password,
+            })
+            if(error) throw error
+            setToken(data)
+            navigate('/dashboard')
+        }catch(error){
+            alert(error)
+        }
+    }
     
     function handleChange(event){
         setFormData((prevFormData)=>{
@@ -52,6 +73,7 @@ function Login() {
                     paddingRight: '5%',
                     paddingBottom: '4.5%'
                 }}>
+                    <form onSubmit={handleSubmit}>
 
                     <Typography variant='h5' sx={{
                         fontFamily: 'Nunito Sans, sans-serif',
@@ -92,8 +114,10 @@ function Login() {
                         font: 'Nunito Sans, 12px'
                         }}
                     />
-
-                    <Button variant="contained" sx={{
+                    
+                    <Button 
+                        type='submit'
+                        variant="contained" sx={{
                         marginTop: '15%',
                         width: '98%',
                         paddingTop: '4%',
@@ -102,7 +126,7 @@ function Login() {
                         fontFamily: 'Nunito Sans, Sans-serif',
                         fontSize: '1.2rem'
                     }}>Login</Button>
-
+                    </form>
                     <Typography variant='h6' sx={{
                         textAlign: 'center',
                         marginTop: '5%',
