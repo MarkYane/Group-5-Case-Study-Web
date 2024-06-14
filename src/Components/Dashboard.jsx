@@ -1,8 +1,10 @@
 import { Box, Button, Typography, List, ListItem, ListItemText } from '@mui/material';
-import './Dashboard.css'
+import './Dashboard.css';
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
 import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
-function Dashboard(){
+import { Link } from 'react-router-dom';
+
+function Dashboard() {
     const numb = 4;
     const menuItems = [
         {
@@ -15,14 +17,15 @@ function Dashboard(){
         },
         {
             text: 'Ward',
-            path: '/ward'
+            path: '/dashboard/ward'
         },
         {
             text: 'Supplies',
             path: '/supplies'
         }
-    ]
-    return(
+    ];
+    
+    return (
         <>
             {/* Whole Container for Dashboard.jsx */}
             <Box sx={{
@@ -42,35 +45,28 @@ function Dashboard(){
                     display: 'flex',
                     flexDirection: 'column'
                 }}>
-                    <Button sx={{
-                        marginTop: '50%'
-                    }}>
+                    <Button sx={{ marginTop: '50%' }}>
                         <Typography>
-                        <i className="material-symbols-outlined">
-                            person
-                        </i>
+                            <i className="material-symbols-outlined">
+                                person
+                            </i>
                         </Typography>
                     </Button>
-                    <Button sx={{
-                        marginTop: '30%'
-                    }}>
+                    <Button sx={{ marginTop: '30%' }}>
                         <Typography>
-                        <i className="material-symbols-outlined">
-                            home
-                        </i>
+                            <i className="material-symbols-outlined">
+                                home
+                            </i>
                         </Typography>
                     </Button>
-                    <Button sx={{
-                        marginTop: '620%'
-                    }}>
+                    <Button sx={{ marginTop: '620%' }}>
                         <Typography>
-                        <i className="material-symbols-outlined" id='logout'>
-                            logout
-                        </i>
+                            <i className="material-symbols-outlined" id='logout'>
+                                logout
+                            </i>
                         </Typography>
                     </Button>
                 </Box>
-
                 {/* ------ END ----- Sidebar */}
                 
                 {/* ------ START ------ Navigation Bar */}
@@ -82,19 +78,23 @@ function Dashboard(){
                     marginRight: '5%',
                     marginTop: '3%',
                     display: 'flex'
-                    
                 }}>
-
-                {menuItems.map(item => (
-                    <Button sx={{
-                        flexGrow: 1,
-                        fontFamily: 'Nunito Sans, Sans-serif',
-                        fontSize: '1.5rem',
-                        color: 'black'
-                    }} key={item.text}>{item.text}</Button>
-                ))}
+                    {menuItems.map(item => (
+                        <Button 
+                            component={Link} 
+                            to={item.path}
+                            sx={{
+                                flexGrow: 1,
+                                fontFamily: 'Nunito Sans, Sans-serif',
+                                fontSize: '1.5rem',
+                                color: 'black'
+                            }} 
+                            key={item.text}
+                        >
+                            {item.text}
+                        </Button>
+                    ))}
                 </Box>
-
                 {/* ------ END ------ Navigation Bar */}
 
                 {/*Dashboard Box  */}

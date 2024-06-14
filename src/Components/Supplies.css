@@ -1,0 +1,58 @@
+/* Supplies.css */
+.search-container {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  
+  .search-button {
+    background-color: #ffffff;
+    color: white;
+  }
+  
+  .ward-requisition-button-container {
+    display: flex;
+    justify-content: flex-end; /* Align button to the right */
+  }
+  
+  .ward-requisition-button {
+    background-color: #2CAFA4; /* Set background color to #2CAFA4 */
+    color: rgb(255, 255, 255);
+    border: 1px solid #007bff; /* Example border color */
+  }
+  
+  .supplies-section {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+  }
+  
+  .supplies-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .table-header {
+    font-weight: bold;
+    background-color: #f1f1f1;
+  }
+  
+  .table-row {
+    background-color: #fff;
+  }
+  
+  .table-row:nth-of-type(odd) {
+    background-color: #f9f9f9;
+  }
+  
+  .submit-button {
+    background-color: #2CAFA4;
+    color: white;
+  }
+  
+  .delete-button {
+    background-color: #F44336;
+    color: white;
+  }
+  

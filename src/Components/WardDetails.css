@@ -1,0 +1,162 @@
+/* Setting the overall container size */
+html, body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: white; /* Set background to white */
+}
+
+.layout {
+    display: flex;
+    height: 100%;
+}
+
+/* Styling for the sidebar with gradient colors */
+.sidebar {
+    width: 80px; /* Adjusted width for better spacing */
+    background: linear-gradient(to bottom, #2CAFA4, #0194D3);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between; /* Ensure space between top and bottom sections */
+    padding: 20px 0; /* Adjusted padding */
+}
+
+.icon {
+    color: white;
+    font-size: 30px; /* Adjusted font size */
+    margin: 30px 0; /* Adjusted margin */
+    cursor: pointer;
+}
+
+/* Styling for the main content area */
+.main-content {
+    flex: 1;
+    padding: 40px; /* Adjusted padding */
+    background-color: #f7fafd;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+/* Styling for the top navigation bar */
+.top-nav {
+    display: flex;
+    justify-content: space-around;
+    background-color: white;
+    padding: 15px 0; /* Adjusted padding */
+    border-radius: 8px;
+}
+
+.nav-item {
+    padding: 10px 20px;
+    cursor: pointer;
+    color: #007bff;
+    text-decoration: none;
+}
+
+.nav-item:hover {
+    color: #0056b3;
+}
+
+.nav-item.active {
+    color: #007bff;
+    border-bottom: 2px solid #007bff;
+}
+
+/* General styling for the container */
+.ward-details-container {
+    padding: 20px;
+    background-color: white;
+    border-radius: 8px;
+    flex: 1;
+}
+
+/* Header styling */
+h1 {
+    color: #007bff;
+    font-size: 24px; /* Adjusted font size */
+}
+
+/* Styling for the search container */
+.search-container {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    align-items: center; /* Center align items vertically */
+}
+
+.search-container input {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    flex: 1;
+    max-width: 300px; /* Adjust max-width as per your requirement */
+}
+
+.search-container button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+}
+
+.search-container button.ward-supplies-button {
+    background-color: #28a745;
+}
+
+/* Styling for the table */
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+thead {
+    background-color: #007bff;
+    color: white;
+}
+
+th, td {
+    padding: 10px;
+    border: 1px solid #ccc;
+    text-align: left;
+}
+
+th {
+    background-color: #007bff; /* Ensuring header color is blue */
+    color: white;
+}
+
+td {
+    background-color: white; /* Ensuring table cells are white */
+}
+
+/* Styling for search input */
+.search-container input::placeholder {
+    color: #999;
+}
+
+/* Additional button styles */
+.button-container {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.button-container button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+}
+
+.button-container button.ward-supplies-button {
+    background-color: #28a745;
+}
