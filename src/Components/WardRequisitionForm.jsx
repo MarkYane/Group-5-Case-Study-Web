@@ -126,8 +126,10 @@ const WardRequisitionForm = () => {
             <Button component={Link} to="/view-requisitions" variant="contained" color="success">View Requested Requisitions</Button>
           </Box>
         </Box>
+        <Button onClick={() => window.history.back()} sx={{ alignSelf: 'flex-end', marginBottom: '20px' }}>BACK</Button>
       </Box>
     </Box>
+    
   );
 }
 

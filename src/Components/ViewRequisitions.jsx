@@ -102,6 +102,7 @@ const ViewRequisitions = () => {
             </Table>
           </Box>
         </Box>
+        <Button onClick={() => window.history.back()} sx={{ alignSelf: 'flex-end', marginBottom: '20px' }}>BACK</Button>
       </Box>
     </Box>
   );
