@@ -37,7 +37,7 @@ function Dashboard(){
                 <Box sx={{
                     height: '100vh',
                     width: '7%',
-                    backgroundColor: 'white',
+                    backgroundImage: 'linear-gradient(#2CAFA4, #0194D3)',
                     position: 'fixed',
                     display: 'flex',
                     flexDirection: 'column'

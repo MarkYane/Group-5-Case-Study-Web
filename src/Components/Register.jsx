@@ -5,6 +5,8 @@ import InputAdornment from '@mui/material/InputAdornment';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { Link } from 'react-router-dom';
+import './Login.css'
+import { supabase } from '../client';
 function Register() {
     const [showPassword, setShowPassword] = useState(false);
 
@@ -12,6 +14,18 @@ function Register() {
         setShowPassword((prevShowPassword) => !prevShowPassword);
     };
 
+    const [formData, setFormData] = useState({
+        email:'', fullName:'', password:'', contactNumber:''
+    })
+    
+    function handleChange(event){
+        setFormData((prevFormData)=>{
+            return{
+                ...prevFormData,
+                [event.target.name]:event.target.value
+            }
+        })
+    }
     return (
         <>
             <Box sx={{
@@ -45,7 +59,7 @@ function Register() {
                         marginBottom: '2%'
                     }}>Email</Typography>
 
-                    <TextField variant='outlined' size="medium" label="Enter email" sx={{
+                    <TextField variant='outlined' size="medium" label="Enter email" name='email' onChange={handleChange} sx={{
                         width: '98.5%',
                         font: 'Nunito Sans, 12px',
                         marginBottom: '8%'
@@ -58,7 +72,7 @@ function Register() {
                         marginBottom: '2%'
                     }}>Full Name</Typography>
 
-                    <TextField variant='outlined' size="medium" label="Enter fullname" sx={{
+                    <TextField variant='outlined' size="medium" label="Enter fullname"  name='fullName' onChange={handleChange} sx={{
                         width: '98.5%',
                         font: 'Nunito Sans, 12px',
                         marginBottom: '8%'
@@ -72,6 +86,7 @@ function Register() {
                     }}>Password</Typography>
 
                     <TextField
+                        name='password' onChange={handleChange} 
                         variant="outlined"
                         type={showPassword ? 'text' : 'password'}
                         label="Enter password"
@@ -97,7 +112,7 @@ function Register() {
                         marginBottom: '2%'
                     }}>Contact Number</Typography>
 
-                    <TextField variant='outlined' size="medium" label="Enter contact number" sx={{
+                    <TextField variant='outlined' size="medium" label="Enter contact number" name='contactNumber' onChange={handleChange} sx={{
                         width: '98.5%',
                         font: 'Nunito Sans, 12px',
                         marginBottom: '0'

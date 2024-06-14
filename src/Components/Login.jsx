@@ -5,12 +5,26 @@ import InputAdornment from '@mui/material/InputAdornment';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { Link } from 'react-router-dom';
+import './Login.css'
 function Login() {
     const [showPassword, setShowPassword] = useState(false);
 
     const handleTogglePassword = () => {
         setShowPassword((prevShowPassword) => !prevShowPassword);
     };
+
+    const [formData, setFormData] = useState({
+        email:'', password:''
+    })
+    
+    function handleChange(event){
+        setFormData((prevFormData)=>{
+            return{
+                ...prevFormData,
+                [event.target.name]:event.target.value
+            }
+        })
+    }
 
     return (
         <>
@@ -45,7 +59,7 @@ function Login() {
                         marginBottom: '2%'
                     }}>Email</Typography>
 
-                    <TextField variant='outlined' size="medium" label="Enter email" sx={{
+                    <TextField variant='outlined' size="medium" label="Enter email" name='email' onChange={handleChange} sx={{
                         width: '98.5%',
                         font: 'Nunito Sans, 12px',
                         marginBottom: '10%'
@@ -59,6 +73,8 @@ function Login() {
                     }}>Password</Typography>
 
                     <TextField
+                        name='password' 
+                        onChange={handleChange} 
                         variant="outlined"
                         type={showPassword ? 'text' : 'password'}
                         label="Enter password"
