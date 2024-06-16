@@ -62,7 +62,7 @@ const Supplies = () => {
               <TextField placeholder="Enter drug number" variant="outlined" size="small" />
               <Button variant="contained" color="primary" size="small" sx={{ marginLeft: '10px' }}>Search</Button>
               <Button component={Link} to="/supplies/ward-requisition" variant="outlined" className="ward-requisition-button" sx={{ backgroundColor: '#2CAFA4', color: 'white' }}>
-                Ward Requisition Form
+                Update Supplies Form
               </Button>
             </Box>
             <Table>
