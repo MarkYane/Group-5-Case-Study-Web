@@ -61,7 +61,7 @@ const ViewRequisitions = () => {
             <Box sx={{ display: 'flex', gap: '10px', marginBottom: '20px' }}>
               <TextField placeholder="Enter req number" variant="outlined" size="small" />
               <Button variant="contained" color="primary" size="small">Search</Button>
-              <Button component={Link} to="/supplies/ward-requisition" variant="contained" color="success" size="small">Ward Requisition Form</Button>
+              <Button component={Link} to="/dashboard/ward" variant="contained" color="success" size="small">Ward Requisition Form</Button>
             </Box>
             <Table>
               <TableHead>
