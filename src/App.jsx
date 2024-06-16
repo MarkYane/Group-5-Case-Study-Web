@@ -6,13 +6,18 @@ import {createBrowserRouter, RouterProvider} from 'react-router-dom'
 import Dashboard from './Components/Dashboard.jsx'
 import Patient from './Components/PatientTab.jsx'
 import Profile from './Components/Profile.jsx'
+import Staff from './Components/Staff.jsx'
+import Ward from './Components/Ward.jsx'
+import Supplies from './Components/Supplies.jsx'
+import { supabase } from './client.js';
+
 function App() {
 
   const [token, setToken] = useState(false)
   if(token){
     sessionStorage.setItem('token', JSON.stringify(token))
   }
-
+  
   useEffect(() =>{
     if(sessionStorage.getItem('token')){
       let data = JSON.parse(sessionStorage.getItem('token'))
@@ -20,7 +25,20 @@ function App() {
     }
   }, [])
 
+  const [staffs, setStaffs] = useState([])
   
+  useEffect(() => {
+    fetchStaffs()
+  }, [])
+
+  async function fetchStaffs(){
+    const {data} = await supabase
+    .from('staff')
+    .select('*')
+    setStaffs(data)
+    
+  }
+
   const router = createBrowserRouter([
     {
         path:'/',
@@ -41,6 +59,18 @@ function App() {
     {
       path:'/profile',
       element: token ? <Profile token={token}/> : <LoginPage setToken={setToken}/>
+    },
+    {
+      path:'/staffs',
+      element: token ? <Staff token={token}/> : <LoginPage setToken={setToken}/>
+    },
+    {
+      path: '/wards',
+      element:  token ? <Ward token={token}/> : <LoginPage setToken={setToken}/>
+    },
+    {
+      path: '/supplies',
+      element:  token ? <Supplies token={token}/> : <LoginPage setToken={setToken}/> 
     }
   ])
 

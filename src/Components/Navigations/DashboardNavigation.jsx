@@ -103,7 +103,8 @@ function DashboardNavigation(){
                 {menuItems.map(item => (
                     
                     <Button variant='text' 
-                    
+                    component={Link}
+                    to={item.path}
                     sx={{
                         flexGrow: 1,
                         fontFamily: 'Nunito Sans, Sans-serif',
@@ -111,9 +112,7 @@ function DashboardNavigation(){
                         color: location.pathname == item.path ? 'white' : 'black',
                         backgroundColor: location.pathname == item.path ? '#26ABAA' : 'white',
                     }}key={item.text}>
-                        <Link className='linkNavigation'key={item.text} to={item.path}>
                             {item.text}
-                        </Link>
                     </Button>
                     
                     

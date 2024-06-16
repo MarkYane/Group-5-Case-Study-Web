@@ -1,0 +1,53 @@
+*, *::before, *::after{
+    box-sizing: border-box;
+    margin: 0;
+    border: 0;
+}
+
+
+.scrollable-container{
+    overflow-y: auto;
+    background-color: white;
+}
+.staff-content-table{
+    border-collapse: collapse;
+    font-family: 'Nunito Sans', 'Sans-serif';
+    margin: 0px 2%;
+    font-size: 1.6rem;
+    min-width: 90%;
+    text-align: left;
+    
+}
+
+.staff-content-table thead tr{
+    background-color: white;
+    font-weight: bold;
+    border-bottom: 2px solid #26ABAA;
+    position: sticky;
+    top: 0px;
+}
+
+.staff-content-table th, .content-table td{
+    padding: 12px 38px;
+}
+
+.staff-content-table tbody tr{
+    border-bottom: 1px solid #dddddd;
+}
+
+.staff-content-table tbody tr:nth-of-type(even){
+    background-color: #f3f3f3;
+}
+
+/* 
+height: '40vh',
+                    width: '50%',
+                    backgroundColor: '#E7F3F5',
+                    marginLeft: '12%',
+                    marginRight: '2%',
+                    marginTop: '3%',
+                    padding: 0,
+                    display: 'flex',
+                    flexWrap: 'wrap',
+                    alignContent: 'flex-start',
+*/
