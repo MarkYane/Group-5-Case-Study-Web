@@ -77,7 +77,7 @@ const WardRequisitionForm = () => {
 
           {/* Pharmaceutical Supplies Form */}
           <Box sx={{ backgroundColor: 'white', padding: '20px', borderRadius: '8px' }}>
-            <Typography variant="h6">Pharmaceutical Supplies Form</Typography>
+            <Typography variant="h6">Pharmaceutical Update Supplies Form</Typography>
             <Box sx={{ display: 'flex', flexDirection: 'row', gap: '20px' }}>
               <Box sx={{ flex: 1 }}>
                 <TextField label="Drug Number" variant="outlined" fullWidth size="small" />
@@ -101,7 +101,7 @@ const WardRequisitionForm = () => {
 
           {/* Surgical Requisition Supplies Form */}
           <Box sx={{ backgroundColor: 'white', padding: '20px', borderRadius: '8px' }}>
-            <Typography variant="h6">Surgical Requisition Supplies Form</Typography>
+            <Typography variant="h6">Surgical Update Supplies Form</Typography>
             <Box sx={{ display: 'flex', flexDirection: 'row', gap: '20px' }}>
               <Box sx={{ flex: 1 }}>
                 <TextField label="Item Number" variant="outlined" fullWidth size="small" />
