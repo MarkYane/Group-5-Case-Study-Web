@@ -7,7 +7,10 @@
 .scrollable-container{
     overflow-y: auto;
     background-color: white;
+    height: 37vh;
+    width: 100%;
 }
+
 .content-table{
     border-collapse: collapse;
     font-family: 'Nunito Sans', 'Sans-serif';
@@ -15,7 +18,7 @@
     font-size: 1.6rem;
     min-width: 90%;
     text-align: left;
-    
+    max-height: 90%;
 }
 
 .content-table thead tr{

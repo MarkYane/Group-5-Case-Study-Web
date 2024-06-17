@@ -100,7 +100,7 @@ function Supplies({token}){
                     
                     {/* Display for Pharmaceutical stable */}
 
-                    <Box className='scrollable-container'sx={{
+                    <Box className='scrollable-container' sx={{
                         height: '37vh',
                         width: '100%',
                     }}>
@@ -225,8 +225,7 @@ function Supplies({token}){
                     <Box sx={{
                         backgroundColor: 'white',
                         height: '37vh',
-                        width: '100%',
-                        
+                        width: '100%', 
                     }}>
                      <table className="content-table">
                         <thead>
@@ -252,6 +251,7 @@ function Supplies({token}){
                               <td>Taga asa ko Street lmasdasdaasjasdkjasbdkasjdbsdao xd</td>
                            </tr>
 
+                           
                         </tbody>
                      </table>
                     </Box>

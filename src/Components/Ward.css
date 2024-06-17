@@ -7,7 +7,7 @@
 
 .scrollable-container{
     overflow-y: auto;
-    background-color: white;
+    background-color: black;
 }
 .ward-content-table{
     border-collapse: collapse;

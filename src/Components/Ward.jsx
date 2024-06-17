@@ -101,7 +101,7 @@ function Ward({token}){
                     
                     {/* Display for Ward stable */}
 
-                    <Box sx={{
+                    <Box className='scrollable-container' sx={{
                         backgroundColor: 'white',
                         height: '37vh',
                         width: '100%',
