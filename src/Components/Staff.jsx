@@ -3,8 +3,24 @@ import { Box, Button, InputAdornment, TextField, Typography} from '@mui/material
 import { Link, Navigate, useNavigate, useLocation } from 'react-router-dom';
 import DashboardNavigation from './Navigations/DashboardNavigation';
 import SearchIcon from '@mui/icons-material/Search';
+import { supabase } from '../client';
+import { useState, useEffect } from 'react';
+
+
 function Staff({token}){
+   const [staffs, setStaffs] = useState([])
   
+   useEffect(() => {
+     fetchStaffs()
+   }, [])
+ 
+   async function fetchStaffs(){
+     const {data} = await supabase
+     .from('staff')
+     .select('*')
+     setStaffs(data)
+
+   }
     return(
         <>
             <Box sx={{
@@ -121,16 +137,18 @@ function Staff({token}){
                         </thead>
 
                         <tbody>
-                           <tr>
-                              <td>123</td>
-                              <td>Jan Ru</td>
-                              <td>Nac</td>
-                              <td>Kambing</td>
-                              <td>00-00-2004</td>
-                              <td>091234567</td>
-                              <td>MAO1239412</td>
-                              <td>Taga asa ko Street lmasdasdaasdao xd</td>
+                           {staffs.map((staff) =>
+                           <tr key={staff.staff_num}>
+                              <td>{staff.staff_num}</td>
+                              <td>{staff.first_name}</td>
+                              <td>{staff.last_name}</td>
+                              <td>{staff.sex}</td>
+                              <td>{staff.date_of_birth}</td>
+                              <td>{staff.telephone_number}</td>
+                              <td>{staff.nin}</td>
+                              <td>{staff.address}</td>
                            </tr>
+                           )}
 
                         </tbody>
                      </table>
