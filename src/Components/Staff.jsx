@@ -116,7 +116,7 @@ function Staff({token}){
                     
                     {/* Display for Staff stable */}
 
-                    <Box sx={{
+                    <Box className='scrollable-container' sx={{
                         backgroundColor: 'white',
                         height: '37vh',
                         width: '100%',
@@ -241,7 +241,7 @@ function Staff({token}){
                     
                     {/* Display for Qualification stable */}
 
-                    <Box sx={{
+                    <Box className='scrollable-container' sx={{
                         backgroundColor: 'white',
                         height: '37vh',
                         width: '100%',
@@ -361,7 +361,7 @@ function Staff({token}){
                     
                     {/* Display for Staff stable */}
 
-                    <Box sx={{
+                    <Box className='scrollable-container' sx={{
                         backgroundColor: 'white',
                         height: '37vh',
                         width: '100%',
@@ -483,7 +483,7 @@ function Staff({token}){
                     
                     {/* Display for Staff stable */}
 
-                    <Box sx={{
+                    <Box className='scrollable-container' sx={{
                         backgroundColor: 'white',
                         height: '37vh',
                         width: '100%',
@@ -599,7 +599,7 @@ function Staff({token}){
                     
                     {/* Display for Staff stable */}
 
-                    <Box sx={{
+                    <Box className='scrollable-container' sx={{
                         backgroundColor: 'white',
                         height: '37vh',
                         width: '100%',

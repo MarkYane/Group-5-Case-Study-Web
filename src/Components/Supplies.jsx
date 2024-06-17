@@ -438,7 +438,7 @@ function Supplies() {
           </Button>
         </Box>
 
-        <Box
+        <Box className='scrollable-container'
           sx={{
             backgroundColor: 'white',
             height: '37vh',
@@ -576,7 +576,7 @@ function Supplies() {
           </Button>
         </Box>
 
-        <Box
+        <Box className='scrollable-container'
           sx={{
             backgroundColor: 'white',
             height: '37vh',
