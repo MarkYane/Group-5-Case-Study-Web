@@ -1,23 +1,203 @@
 .patient-tab {
-  border: 1px solid #ccc;
-  padding: 20px;
-  border-radius: 8px;
-  max-width: 400px;
-  margin: 20px auto;
-  background-color: #f9f9f9;
+  display: flex;
+  background-color: #e7f3f5;
+  height: 100vh;
 }
 
-.patient-tab-title {
+/* Sidebar */
+.material-symbols-outlined.sidebar-icon {
+  font-size: 2.5rem;
+  color: #ffffff;
+  font-weight: 100;
+}
+
+.sidebar-icon-button {
+  width: 50px;
+  height: 50px;
   margin-bottom: 10px;
-  font-size: 24px;
-  color: #333;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: transparent;
+  border: none;
 }
 
-.patient-info {
-  font-size: 18px;
-  color: #555;
+/* Top Navigation */
+.main-content {
+  flex-grow: 1;
+  padding: 20px;
 }
 
-.patient-info p {
-  margin: 5px 0;
+.top-nav {
+  background-color: #eee;
+  padding: 10px;
+  margin-bottom: 20px;
 }
+
+/* Buttons */
+.buttons {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+
+.buttons button {
+  margin-top: 30px;
+  margin-bottom: 30px;
+  margin-right: 10px;
+  background-color: #2CAFA4;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  font-size: 1rem;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+  height: 50px;
+  width: 190px;
+}
+
+.buttons button:hover {
+  background-color: #238B81;
+}
+
+/* Patient List Container */
+.patient-list-container {
+  margin-left: 5%;
+  margin-right: 5%;
+  background-color: white;
+  padding: 2%;
+  border-radius: 8px;
+  box-shadow: none;
+}
+
+/* Search and Action Buttons */
+.search-action-buttons {
+  display: flex;
+  align-items: center;
+  margin-bottom: 2%;
+}
+
+.search-action-buttons .MuiSvgIcon-root {
+  margin-right: 1rem;
+}
+
+.search-action-buttons .MuiTextField-root {
+  flex-grow: 1;
+}
+
+.search-action-buttons .MuiButton-root {
+  height: 70%;
+  width: 7%;
+  margin-left: 2%;
+  background-color: #26ABAA;
+  font-family: 'Nunito Sans', Sans-serif;
+  color: white;
+  transition: background-color 0.3s;
+}
+
+.search-action-buttons .MuiButton-root:nth-of-type(2) {
+  background-color: #FC696A;
+}
+
+/* Hover effect */
+.search-action-buttons .MuiButton-root:hover {
+  background-color: #1c7f7e;
+  /* Darker shade of #26ABAA */
+}
+
+.search-action-buttons .MuiButton-root:nth-of-type(2):hover {
+  background-color: #b84d4e;
+  /* Darker shade of #FC696A */
+}
+
+/* Patient List */
+.patient-list {
+  background-color: white;
+  padding: 20px;
+}
+
+.patient-content-table {
+  border-collapse: collapse;
+  font-family: 'Nunito Sans', 'Sans-serif';
+  margin: 20px auto;
+  font-size: 1.6rem;
+  width: 100%;
+  text-align: left;
+}
+
+.patient-content-table thead tr {
+  background-color: white;
+  font-weight: bold;
+  border-bottom: 2px solid #26ABAA;
+  position: sticky;
+  top: 0;
+}
+
+.patient-content-table th,
+.patient-content-table td {
+  padding: 12px 20px;
+}
+
+.patient-content-table tbody tr {
+  border-bottom: 1px solid #dddddd;
+}
+
+.patient-content-table tbody tr:nth-of-type(even) {
+  background-color: #f3f3f3;
+}
+
+/* Pagination */
+.pagination {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 1%;
+}
+
+.pagination button {
+  margin: 0 10px;
+  color: #BFBFBF;
+  transition: color 0.3s;
+}
+
+.pagination button:hover {
+  color: #26ABAA;
+}
+
+.pagination .MuiTypography-root {
+  margin: 0 10px;
+}
+
+/* Modal Styles */
+.modal-box {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 400px;
+  background-color: white;
+  border: none;
+  box-shadow: 24;
+  padding: 30px;
+  outline: none;
+  border-radius: 8px;
+
+}
+
+.modal-box .MuiTypography-root {
+  margin-bottom: 16px;
+}
+
+.modal-box .MuiTextField-root {
+  margin-bottom: 16px;
+}
+
+.modal-box .MuiButton-root {
+  width: 48%;
+}
+
+
+
+
