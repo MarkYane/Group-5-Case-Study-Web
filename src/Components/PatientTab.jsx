@@ -181,9 +181,6 @@ function PatientTab({ token }) {
   const handleSubmitNextOfKin = async () => {
     console.log("Form Data on Submit (Next of Kin):", formDataNextOfKin);
 
-    // Ensure dialogTitleNextOfKin is correctly set and matches expected values ('Add Next of Kin', 'Update Next of Kin', 'Delete Next of Kin')
-
-    try {
       if (dialogTitleNextOfKin === 'Add Next of Kin') {
         const { error } = await supabase.from('next_of_kin').insert([formDataNextOfKin]);
         if (error) {
@@ -209,9 +206,7 @@ function PatientTab({ token }) {
           fetchNextOfKin(formDataNextOfKin.patient_num); // Ensure fetchNextOfKin function works as intended
         }
       }
-    } catch (error) {
-      console.error('Error handling Next of Kin submission:', error);
-    }
+    
   };
 
 
@@ -575,15 +570,7 @@ function PatientTab({ token }) {
             }}>
               Search
             </Button>
-            <Button onClick={() => handleOpenDialogNextOfKin('Add Next of Kin', {
-              kin_id: '',
-              patient_num: '',
-              first_name: '',
-              last_name: '',
-              relationship: '',
-              address: '',
-              tel_num: ''
-            })} sx={{
+            <Button onClick={() => handleOpenDialogNextOfKin('Add Next of Kin')} sx={{
               height: '70%',
               width: '7%',
               marginLeft: '54%',
@@ -594,15 +581,7 @@ function PatientTab({ token }) {
             }}>
               Add
             </Button>
-            <Button onClick={() => handleOpenDialogNextOfKin('Update Next of Kin', {
-              kin_id: '',
-              patient_num: '',
-              first_name: '',
-              last_name: '',
-              relationship: '',
-              address: '',
-              tel_num: ''
-            })} sx={{
+            <Button onClick={() => handleOpenDialogNextOfKin('Update Next of Kin')} sx={{
               height: '70%',
               width: '7%',
               marginLeft: '2%',
@@ -613,9 +592,7 @@ function PatientTab({ token }) {
             }}>
               Update
             </Button>
-            <Button onClick={() => handleOpenDialogNextOfKin('Delete Next of Kin', {
-              kin_id: ''
-            })} sx={{
+            <Button onClick={() => handleOpenDialogNextOfKin('Delete Next of Kin')} sx={{
               height: '70%',
               width: '7%',
               marginLeft: '2%',
