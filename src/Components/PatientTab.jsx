@@ -77,7 +77,7 @@ function PatientTab({ token }) {
   const handleOpenDialogNextOfKin = (title, initialData = {}) => {
     setDialogTitleNextOfKin(title);
     setFormDataNextOfKin({
-      next_of_kin_id: '',
+      kin_id: '',
       patient_num: '',
       first_name: '',
       last_name: '',
@@ -190,7 +190,7 @@ function PatientTab({ token }) {
           fetchNextOfKin(formDataNextOfKin.patient_num); // Ensure fetchNextOfKin function works as intended
         }
       } else if (dialogTitleNextOfKin === 'Update Next of Kin') {
-        const { error } = await supabase.from('next_of_kin').update(formDataNextOfKin).eq('next_of_kin_id', formDataNextOfKin.next_of_kin_id);
+        const { error } = await supabase.from('next_of_kin').update(formDataNextOfKin).eq('kin_id', formDataNextOfKin.kin_id);
         if (error) {
           console.error('Error updating next of kin:', error);
         } else {
@@ -198,7 +198,7 @@ function PatientTab({ token }) {
           fetchNextOfKin(formDataNextOfKin.patient_num); // Ensure fetchNextOfKin function works as intended
         }
       } else if (dialogTitleNextOfKin === 'Delete Next of Kin') {
-        const { error } = await supabase.from('next_of_kin').delete().eq('next_of_kin_id', formDataNextOfKin.next_of_kin_id);
+        const { error } = await supabase.from('next_of_kin').delete().eq('kin_id', formDataNextOfKin.kin_id);
         if (error) {
           console.error('Error deleting next of kin:', error);
         } else {
@@ -623,7 +623,7 @@ function PatientTab({ token }) {
               </thead>
               <tbody>
                 {nextOfKin.map((kin) =>
-                  <tr key={kin.next_of_kin_num}>
+                  <tr key={kin.kin_id}>
                     <td>{kin.first_name}</td>
                     <td>{kin.last_name}</td>
                     <td>{kin.relationship}</td>
@@ -646,8 +646,8 @@ function PatientTab({ token }) {
               label="Next of Kin ID"
               type="text"
               fullWidth
-              name="next_of_kin_id"
-              value={formDataNextOfKin.next_of_kin_id || ''}
+              name="kin_id"
+              value={formDataNextOfKin.kin_id || ''}
               onChange={handleFormChange}
             />
             {dialogTitleNextOfKin !== 'Delete Next of Kin' && (
