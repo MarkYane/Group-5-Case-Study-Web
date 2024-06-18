@@ -14,9 +14,13 @@ function PatientTab({ token }) {
   const [nextOfKin, setNextOfKin] = useState([]);
   const [localDoctor, setLocalDoctor] = useState(null);
 
-  const [openDialog, setOpenDialog] = useState(false);
-  const [dialogTitle, setDialogTitle] = useState('');
-  const [formData, setFormData] = useState({});
+  const [openDialogPatient, setOpenDialogPatient] = useState(false);
+  const [dialogTitlePatient, setDialogTitlePatient] = useState('');
+  const [formDataPatient, setFormDataPatient] = useState({});
+
+  const [openDialogNextOfKin, setOpenDialogNextOfKin] = useState(false);
+  const [dialogTitleNextOfKin, setDialogTitleNextOfKin] = useState('');
+  const [formDataNextOfKin, setFormDataNextOfKin] = useState({});
 
   useEffect(() => {
     fetchPatients();
@@ -65,43 +69,153 @@ function PatientTab({ token }) {
     fetchLocalDoctor(doctorPatientNum);
   };
 
-  const handleOpenDialog = (title, initialData) => {
-    setDialogTitle(title);
-    setFormData(initialData);
-    setOpenDialog(true);
+
+
+
+
+
+  const handleOpenDialogNextOfKin = (title, initialData = {}) => {
+    setDialogTitleNextOfKin(title);
+    setFormDataNextOfKin({
+      next_of_kin_id: '',
+      patient_num: '',
+      first_name: '',
+      last_name: '',
+      relationship: '',
+      tel_num: '',
+      address: '',
+      ...initialData,
+    });
+    setOpenDialogNextOfKin(true);
+    setOpenDialogPatient(false); // Ensure other dialog is closed
   };
 
-  const handleCloseDialog = () => {
-    setOpenDialog(false);
-    setFormData({});
+  const handleCloseDialogNextOfKin = () => {
+    setOpenDialogNextOfKin(false);
+    setFormDataNextOfKin({});
   };
+
+  const handleOpenDialogPatient = (title, initialData = {}) => {
+    setDialogTitlePatient(title);
+    setFormDataPatient({
+      patient_num: '',
+      first_name: '',
+      last_name: '',
+      address: '',
+      tel_num: '',
+      date_of_birth: '',
+      sex: '',
+      marital_status: '',
+      registered_date: '',
+      clinic_num: '',
+      ...initialData,
+    });
+    setOpenDialogPatient(true);
+    setOpenDialogNextOfKin(false); // Ensure other dialog is closed
+  };
+
+  const handleCloseDialogPatient = () => {
+    setOpenDialogPatient(false);
+    setFormDataPatient({});
+  };
+
+
+
+
+
 
   const handleFormChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
+    const { name, value } = e.target;
+
+    if (openDialogPatient) {
+      setFormDataPatient((prevData) => ({
+        ...prevData,
+        [name]: value,
+      }));
+    } else if (openDialogNextOfKin) {
+      setFormDataNextOfKin((prevData) => ({
+        ...prevData,
+        [name]: value,
+      }));
+    }
   };
 
+
+
+
+
+
+
+
+
   const handleSubmitPatient = async () => {
-    const { error } = await supabase.from('patients').insert([formData]);
-    if (error) {
-      console.error('Error inserting patient:', error);
-    } else {
-      handleCloseDialog();
-      fetchPatients();
+    console.log("Form Data on Submit:", formDataPatient);
+
+    if (dialogTitlePatient === 'Add Patient') {
+      const { error } = await supabase.from('patients').insert([formDataPatient]);
+      if (error) {
+        console.error('Error inserting patient:', error);
+      } else {
+        handleCloseDialogPatient();
+        fetchPatients(); // Add your logic to fetch patients and update the state
+      }
+    } else if (dialogTitlePatient === 'Update Patient') {
+      const { error } = await supabase.from('patients').update(formDataPatient).eq('patient_num', formDataPatient.patient_num);
+      if (error) {
+        console.error('Error updating patient:', error);
+      } else {
+        handleCloseDialogPatient();
+        fetchPatients(); // Add your logic to fetch patients and update the state
+      }
+    } else if (dialogTitlePatient === 'Delete Patient') {
+      const { error } = await supabase.from('patients').delete().eq('patient_num', formDataPatient.patient_num);
+      if (error) {
+        console.error('Error deleting patient:', error);
+      } else {
+        handleCloseDialogPatient();
+        fetchPatients(); // Add your logic to fetch patients and update the state
+      }
     }
   };
 
   const handleSubmitNextOfKin = async () => {
-    const { error } = await supabase.from('next_of_kin').insert([formData]);
-    if (error) {
-      console.error('Error inserting next of kin:', error);
-    } else {
-      handleCloseDialog();
-      fetchNextOfKin(formData.patient_num);
+    console.log("Form Data on Submit (Next of Kin):", formDataNextOfKin);
+
+    // Ensure dialogTitleNextOfKin is correctly set and matches expected values ('Add Next of Kin', 'Update Next of Kin', 'Delete Next of Kin')
+
+    try {
+      if (dialogTitleNextOfKin === 'Add Next of Kin') {
+        const { error } = await supabase.from('next_of_kin').insert([formDataNextOfKin]);
+        if (error) {
+          console.error('Error inserting next of kin:', error);
+        } else {
+          handleCloseDialogNextOfKin();
+          fetchNextOfKin(formDataNextOfKin.patient_num); // Ensure fetchNextOfKin function works as intended
+        }
+      } else if (dialogTitleNextOfKin === 'Update Next of Kin') {
+        const { error } = await supabase.from('next_of_kin').update(formDataNextOfKin).eq('next_of_kin_id', formDataNextOfKin.next_of_kin_id);
+        if (error) {
+          console.error('Error updating next of kin:', error);
+        } else {
+          handleCloseDialogNextOfKin();
+          fetchNextOfKin(formDataNextOfKin.patient_num); // Ensure fetchNextOfKin function works as intended
+        }
+      } else if (dialogTitleNextOfKin === 'Delete Next of Kin') {
+        const { error } = await supabase.from('next_of_kin').delete().eq('next_of_kin_id', formDataNextOfKin.next_of_kin_id);
+        if (error) {
+          console.error('Error deleting next of kin:', error);
+        } else {
+          handleCloseDialogNextOfKin();
+          fetchNextOfKin(formDataNextOfKin.patient_num); // Ensure fetchNextOfKin function works as intended
+        }
+      }
+    } catch (error) {
+      console.error('Error handling Next of Kin submission:', error);
     }
   };
+
+
+
 
   const handleSubmitLocalDoctor = async () => {
     const { error } = await supabase.from('local_doctors').insert([formData]);
@@ -113,25 +227,6 @@ function PatientTab({ token }) {
     }
   };
 
-  const handleUpdatePatient = async () => {
-    const { error } = await supabase.from('patients').update(formData).eq('patient_num', formData.patient_num);
-    if (error) {
-      console.error('Error updating patient:', error);
-    } else {
-      handleCloseDialog();
-      fetchPatients();
-    }
-  };
-
-  const handleUpdateNextOfKin = async () => {
-    const { error } = await supabase.from('next_of_kin').update(formData).eq('patient_num', formData.patient_num);
-    if (error) {
-      console.error('Error updating next of kin:', error);
-    } else {
-      handleCloseDialog();
-      fetchNextOfKin(formData.patient_num);
-    }
-  };
 
   const handleUpdateLocalDoctor = async () => {
     const { error } = await supabase.from('local_doctors').update(formData).eq('patient_num', formData.patient_num);
@@ -143,23 +238,7 @@ function PatientTab({ token }) {
     }
   };
 
-  const handleDeletePatient = async (patientNumber) => {
-    const { error } = await supabase.from('patients').delete().eq('patient_num', patientNumber);
-    if (error) {
-      console.error('Error deleting patient:', error);
-    } else {
-      fetchPatients();
-    }
-  };
 
-  const handleDeleteNextOfKin = async (patientNumber) => {
-    const { error } = await supabase.from('next_of_kin').delete().eq('patient_num', patientNumber);
-    if (error) {
-      console.error('Error deleting next of kin:', error);
-    } else {
-      fetchNextOfKin(patientNumber);
-    }
-  };
 
   const handleDeleteLocalDoctor = async (patientNumber) => {
     const { error } = await supabase.from('local_doctors').delete().eq('patient_num', patientNumber);
@@ -239,18 +318,7 @@ function PatientTab({ token }) {
             }}>
               Search
             </Button>
-            <Button onClick={() => handleOpenDialog('Add Patient', {
-              patient_num: '',
-              first_name: '',
-              last_name: '',
-              address: '',
-              tel_num: '',
-              date_of_birth: '',
-              sex: '',
-              marital_status: '',
-              registered_date: '',
-              clinic_num: ''
-            })} sx={{
+            <Button onClick={() => handleOpenDialogPatient('Add Patient')} sx={{
               height: '70%',
               width: '7%',
               marginLeft: '54%',
@@ -262,18 +330,7 @@ function PatientTab({ token }) {
               Add
             </Button>
 
-            <Button onClick={() => handleOpenDialog('Update Patient', {
-              patient_num: '',
-              first_name: '',
-              last_name: '',
-              address: '',
-              tel_num: '',
-              date_of_birth: '',
-              sex: '',
-              marital_status: '',
-              registered_date: '',
-              clinic_num: ''
-            })} sx={{
+            <Button onClick={() => handleOpenDialogPatient('Update Patient')} sx={{
               height: '70%',
               width: '7%',
               marginLeft: '2%',
@@ -285,7 +342,7 @@ function PatientTab({ token }) {
               Update
             </Button>
 
-            <Button onClick={handleDeletePatient} sx={{
+            <Button onClick={() => handleOpenDialogPatient('Delete Patient')} sx={{
               height: '70%',
               width: '7%',
               marginLeft: '2%',
@@ -334,108 +391,123 @@ function PatientTab({ token }) {
         </Box>
       
 
-      {/* Dialog for Add/Update Patient */}
-      <Dialog open={openDialog} onClose={handleCloseDialog}>
-        <DialogTitle>{dialogTitle}</DialogTitle>
-        <DialogContent>
-          <TextField
-            autoFocus
-            margin="dense"
-            label="Patient Number"
-            type="text"
-            fullWidth
-            name="patient_num"
-            value={formData.patient_num}
-            onChange={handleFormChange}
-          />
-          <TextField
-            margin="dense"
-            label="First Name"
-            type="text"
-            fullWidth
-            name="first_name"
-            value={formData.first_name}
-            onChange={handleFormChange}
-          />
-          <TextField
-            margin="dense"
-            label="Last Name"
-            type="text"
-            fullWidth
-            name="last_name"
-            value={formData.last_name}
-            onChange={handleFormChange}
-          />
-          <TextField
-            margin="dense"
-            label="Address"
-            type="text"
-            fullWidth
-            name="address"
-            value={formData.address}
-            onChange={handleFormChange}
-          />
-          <TextField
-            margin="dense"
-            label="Tel Num"
-            type="text"
-            fullWidth
-            name="tel_num"
-            value={formData.tel_num}
-            onChange={handleFormChange}
-          />
-          <TextField
-            margin="dense"
-            label="Date of Birth"
-            type="date"
-            fullWidth
-            name="date_of_birth"
-            value={formData.date_of_birth}
-            onChange={handleFormChange}
-          />
-          <TextField
-            margin="dense"
-            label="Sex"
-            type="text"
-            fullWidth
-            name="sex"
-            value={formData.sex}
-            onChange={handleFormChange}
-          />
-          <TextField
-            margin="dense"
-            label="Marital Status"
-            type="text"
-            fullWidth
-            name="marital_status"
-            value={formData.marital_status}
-            onChange={handleFormChange}
-          />
-          <TextField
-            margin="dense"
-            label="Registered Date"
-            type="date"
-            fullWidth
-            name="registered_date"
-            value={formData.registered_date}
-            onChange={handleFormChange}
-          />
-          <TextField
-            margin="dense"
-            label="Clinic Num"
-            type="text"
-            fullWidth
-            name="clinic_num"
-            value={formData.clinic_num}
-            onChange={handleFormChange}
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseDialog}>Cancel</Button>
-          <Button onClick={handleSubmitPatient}>Submit</Button>
-        </DialogActions>
-      </Dialog>
+        {/* Dialog for Add/Update/Delete Patient */}
+        <Dialog open={openDialogPatient} onClose={handleCloseDialogPatient}>
+          <DialogTitle>{dialogTitlePatient}</DialogTitle>
+          <DialogContent>
+            <TextField
+              autoFocus
+              margin="dense"
+              label="Patient Number"
+              type="text"
+              fullWidth
+              name="patient_num"
+              value={formDataPatient.patient_num || ''}
+              onChange={handleFormChange}
+            />
+            {dialogTitlePatient !== 'Delete Patient' && (
+              <>
+                <TextField
+                  margin="dense"
+                  label="First Name"
+                  type="text"
+                  fullWidth
+                  name="first_name"
+                  value={formDataPatient.first_name || ''}
+                  onChange={handleFormChange}
+                />
+                <TextField
+                  margin="dense"
+                  label="Last Name"
+                  type="text"
+                  fullWidth
+                  name="last_name"
+                  value={formDataPatient.last_name || ''}
+                  onChange={handleFormChange}
+                />
+                <TextField
+                  margin="dense"
+                  label="Address"
+                  type="text"
+                  fullWidth
+                  name="address"
+                  value={formDataPatient.address || ''}
+                  onChange={handleFormChange}
+                />
+                <TextField
+                  margin="dense"
+                  label="Tel Num"
+                  type="text"
+                  fullWidth
+                  name="tel_num"
+                  value={formDataPatient.tel_num || ''}
+                  onChange={handleFormChange}
+                />
+                <TextField
+                  margin="dense"
+                  label="Date of Birth"
+                  type="date"
+                  fullWidth
+                  name="date_of_birth"
+                  value={formDataPatient.date_of_birth || ''}
+                  onChange={handleFormChange}
+                />
+                <TextField
+                  margin="dense"
+                  label="Sex"
+                  type="text"
+                  fullWidth
+                  name="sex"
+                  value={formDataPatient.sex || ''}
+                  onChange={handleFormChange}
+                />
+                <TextField
+                  margin="dense"
+                  label="Marital Status"
+                  type="text"
+                  fullWidth
+                  name="marital_status"
+                  value={formDataPatient.marital_status || ''}
+                  onChange={handleFormChange}
+                />
+                <TextField
+                  margin="dense"
+                  label="Registered Date"
+                  type="date"
+                  fullWidth
+                  name="registered_date"
+                  value={formDataPatient.registered_date || ''}
+                  onChange={handleFormChange}
+                />
+                <TextField
+                  margin="dense"
+                  label="Clinic Num"
+                  type="text"
+                  fullWidth
+                  name="clinic_num"
+                  value={formDataPatient.clinic_num || ''}
+                  onChange={handleFormChange}
+                />
+              </>
+            )}
+          </DialogContent>
+          <DialogActions>
+            <Button type='button' onClick={handleCloseDialogPatient}>Cancel</Button>
+            <Button type='button' onClick={handleSubmitPatient}>Submit</Button>
+          </DialogActions>
+        </Dialog>
       </Box>
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -503,7 +575,7 @@ function PatientTab({ token }) {
             }}>
               Search
             </Button>
-            <Button onClick={() => handleOpenDialog('Add Next of Kin', {
+            <Button onClick={() => handleOpenDialogNextOfKin('Add Next of Kin', {
               kin_id: '',
               patient_num: '',
               first_name: '',
@@ -522,7 +594,15 @@ function PatientTab({ token }) {
             }}>
               Add
             </Button>
-            <Button sx={{
+            <Button onClick={() => handleOpenDialogNextOfKin('Update Next of Kin', {
+              kin_id: '',
+              patient_num: '',
+              first_name: '',
+              last_name: '',
+              relationship: '',
+              address: '',
+              tel_num: ''
+            })} sx={{
               height: '70%',
               width: '7%',
               marginLeft: '2%',
@@ -533,7 +613,9 @@ function PatientTab({ token }) {
             }}>
               Update
             </Button>
-            <Button sx={{
+            <Button onClick={() => handleOpenDialogNextOfKin('Delete Next of Kin', {
+              kin_id: ''
+            })} sx={{
               height: '70%',
               width: '7%',
               marginLeft: '2%',
@@ -576,6 +658,87 @@ function PatientTab({ token }) {
             </table>
           </Box>
         </Box>
+
+        {/* Dialog for Add/Update/Delete Next of Kin */}
+        <Dialog open={openDialogNextOfKin} onClose={handleCloseDialogNextOfKin}>
+          <DialogTitle>{dialogTitleNextOfKin}</DialogTitle>
+          <DialogContent>
+            <TextField
+              autoFocus
+              margin="dense"
+              label="Next of Kin ID"
+              type="text"
+              fullWidth
+              name="next_of_kin_id"
+              value={formDataNextOfKin.next_of_kin_id || ''}
+              onChange={handleFormChange}
+            />
+            {dialogTitleNextOfKin !== 'Delete Next of Kin' && (
+              <>
+                <TextField
+                  margin="dense"
+                  label="Patient Number"
+                  type="text"
+                  fullWidth
+                  name="patient_num"
+                  value={formDataNextOfKin.patient_num || ''}
+                  onChange={handleFormChange}
+                />
+                <TextField
+                  margin="dense"
+                  label="First Name"
+                  type="text"
+                  fullWidth
+                  name="first_name"
+                  value={formDataNextOfKin.first_name || ''}
+                  onChange={handleFormChange}
+                />
+                <TextField
+                  margin="dense"
+                  label="Last Name"
+                  type="text"
+                  fullWidth
+                  name="last_name"
+                  value={formDataNextOfKin.last_name || ''}
+                  onChange={handleFormChange}
+                />
+                <TextField
+                  margin="dense"
+                  label="Relationship"
+                  type="text"
+                  fullWidth
+                  name="relationship"
+                  value={formDataNextOfKin.relationship || ''}
+                  onChange={handleFormChange}
+                />
+                <TextField
+                  margin="dense"
+                  label="Tel Num"
+                  type="text"
+                  fullWidth
+                  name="tel_num"
+                  value={formDataNextOfKin.tel_num || ''}
+                  onChange={handleFormChange}
+                />
+                <TextField
+                  margin="dense"
+                  label="Address"
+                  type="text"
+                  fullWidth
+                  name="address"
+                  value={formDataNextOfKin.address || ''}
+                  onChange={handleFormChange}
+                />
+              </>
+            )}
+          </DialogContent>
+          <DialogActions>
+            <Button type='button' onClick={handleCloseDialogNextOfKin}>Cancel</Button>
+            <Button type='button' onClick={handleSubmitNextOfKin}>Submit</Button>
+          </DialogActions>
+        </Dialog>
+
+
       </Box>
 
 
