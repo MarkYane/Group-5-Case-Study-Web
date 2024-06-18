@@ -10,7 +10,7 @@ import Staff from './Components/Staff.jsx'
 import Ward from './Components/Ward.jsx'
 import Supplies from './Components/Supplies.jsx'
 import { supabase } from './client.js';
-
+import PatientTab from './Components/PatientTab.jsx'
 function App() {
 
   const [token, setToken] = useState(false)
@@ -25,19 +25,6 @@ function App() {
     }
   }, [])
 
-  const [staffs, setStaffs] = useState([])
-  
-  useEffect(() => {
-    fetchStaffs()
-  }, [])
-
-  async function fetchStaffs(){
-    const {data} = await supabase
-    .from('staff')
-    .select('*')
-    setStaffs(data)
-    
-  }
 
   const router = createBrowserRouter([
     {
@@ -54,7 +41,7 @@ function App() {
     },
     {
       path:'/patients',
-      element: <Patient />
+      element: <PatientTab />
     },
     {
       path:'/profile',
