@@ -165,7 +165,51 @@ function staff({token}){
 
    const handleOpen = (type) => setOpen({ ...open, [type]: true });
    const handleClose = (type) => setOpen({ ...open, [type]: false });
-   
+   const handleChange = (e, type) => {
+      setSearchInput((prevState) => ({
+         ...prevState,
+         [type]: e.target.value,
+      }));
+   };
+
+   const handleSearch = (type) => {
+      const searchTerm = searchInput[type].trim();
+      switch (type) {
+         case 'pharmaceutical':
+            if (searchTerm === '') {
+               fetchSupplies();
+            } else {
+               const filteredPharmaceutical = pharmaceuticalSupplies.filter(
+                  (supply) => supply.drug_num === searchTerm
+               );
+               setPharmaceuticalSupplies(filteredPharmaceutical);
+            }
+            break;
+         case 'surgical':
+            if (searchTerm === '') {
+               fetchSupplies();
+            } else {
+               const filteredSurgical = surgicalSupplies.filter(
+                  (supply) => supply.item_number === searchTerm
+               );
+               setSurgicalSupplies(filteredSurgical);
+            }
+            break;
+         case 'supplier':
+            if (searchTerm === '') {
+               fetchSupplies();
+            } else {
+               const filteredSuppliers = suppliers.filter(
+                  (supplier) => supplier.supplier_number === searchTerm
+               );
+               setSuppliers(filteredSuppliers);
+            }
+            break;
+         default:
+            fetchSupplies();
+            break;
+      }
+   };
 
    const handleSubmitstaff = async () => {
       try {
@@ -221,10 +265,10 @@ function staff({token}){
       try {
          const { data, error } = await supabase
             .from('staff_allocation')
-            .insert([newStaffAllocation]);
+            .insert([newstaffAllocation]);
          if (error) throw error;
          fetchstaff();
-         handleClose('StaffAllocation');
+         handleClose('staffAllocation');
       } catch (error) {
          setError(error.message);
       }
@@ -417,7 +461,9 @@ function staff({token}){
                          }}>
                             Search
                          </Button>
-                         <Button sx={{
+                         <Button 
+                           onClick={() => handleOpen('staff')}
+                           sx={{
                             height: '70%',
                             width: '7%',
                             marginLeft: '54%',
@@ -472,7 +518,7 @@ function staff({token}){
                               {error}
                            </Typography>
                         ) : (
-                         <table className="staff-content-table">
+                         <table className="content-table">
                         <thead>
                            <tr>
                               <th>staff Number</th>
@@ -487,16 +533,16 @@ function staff({token}){
                         </thead>
 
                         <tbody>
-                           {staff.map((staff) => (
-                           <tr key={staff.staff_num}>
-                              <td>{staff.staff_num}</td>
-                              <td>{staff.first_name}</td>
-                              <td>{staff.last_name}</td>
-                              <td>{staff.sex}</td>
-                              <td>{staff.date_of_birth}</td>
-                              <td>{staff.telephone_number}</td>
-                              <td>{staff.nin}</td>
-                              <td>{staff.address}</td>
+                           {staff.map((stap) => (
+                           <tr key={stap.staff_num}>
+                              <td>{stap.staff_num}</td>
+                              <td>{stap.first_name}</td>
+                              <td>{stap.last_name}</td>
+                              <td>{stap.sex}</td>
+                              <td>{stap.date_of_birth}</td>
+                              <td>{stap.telephone_number}</td>
+                              <td>{stap.nin}</td>
+                              <td>{stap.address}</td>
                            </tr>
                         ))}
                      </tbody>
@@ -595,8 +641,8 @@ function staff({token}){
                   variant='outlined'
                   fullWidth
                   name='nin'
-                  value={updatestaff.nin}
-                  onChange={(e) => handleChange(e, setUpdatestaff)}
+                  value={newstaff.nin}
+                  onChange={(e) => handleChange(e, setNewstaff)}
                   margin='normal'
                />
               
@@ -807,7 +853,9 @@ function staff({token}){
                          }}>
                             Search
                          </Button>
-                         <Button sx={{
+                         <Button 
+                            onClick={() => handleOpen('qualification')}
+                           sx={{
                             height: '70%',
                             width: '7%',
                             marginLeft: '54%',
@@ -1458,7 +1506,9 @@ function staff({token}){
                          }}>
                             Search
                          </Button>
-                         <Button sx={{
+                         <Button 
+                           onClick={() => handleOpen('EmploymentContract')} 
+                           sx={{
                             height: '70%',
                             width: '7%',
                             marginLeft: '54%',
@@ -1470,7 +1520,7 @@ function staff({token}){
                             Add
                          </Button>
                          <Button 
-                           onClick={() => handleOpen('EmploymentContract')}
+                           onClick={() => handleOpen('updateEmploymentContract')}
                            sx={{
                             height: '70%',
                             width: '7%',
@@ -1765,7 +1815,9 @@ function staff({token}){
                          }}>
                             Search
                          </Button>
-                         <Button sx={{
+                         <Button 
+                           onClick={() => handleOpen('staffAllocation')}
+                           sx={{
                             height: '70%',
                             width: '7%',
                             marginLeft: '54%',
