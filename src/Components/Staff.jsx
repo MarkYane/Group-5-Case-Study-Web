@@ -106,25 +106,7 @@ function Staff({ token }) {
 
   async function handleDelete() {
     try {
-      switch (activeTable) {
-        case 'staff':
-          await supabase.from('staff').delete().eq('staff_num', dialogData.staff_num);
-          break;
-        case 'qualification':
-          await supabase.from('qualification').delete().eq('staff_num', dialogData.staff_num);
-          break;
-        case 'work_experience':
-          await supabase.from('work_experience').delete().eq('staff_num', dialogData.staff_num);
-          break;
-        case 'employment_contract':
-          await supabase.from('employment_contract').delete().eq('staff_num', dialogData.staff_num);
-          break;
-        case 'staff_allocation':
-          await supabase.from('staff_allocation').delete().eq('staff_num', dialogData.staff_num);
-          break;
-        default:
-          throw new Error('Invalid active table');
-      }
+      await supabase.from(activeTable).delete().eq('staff_num', dialogData.staff_num);
       window.location.reload();
     } catch (error) {
       console.error('Error deleting data:', error);
@@ -149,20 +131,24 @@ function Staff({ token }) {
     setSearchQuery(e.target.value);
   }
 
-  const filteredStaffs = staffs.filter(staff => 
-    staff.staff_num.toString().includes(searchQuery)
-  );
+  const filteredData = {
+    staff: staffs.filter(staff => staff.staff_num.toString().includes(searchQuery)),
+    qualification: qualifications.filter(q => q.staff_num.toString().includes(searchQuery)),
+    work_experience: experiences.filter(e => e.staff_num.toString().includes(searchQuery)),
+    employment_contract: contracts.filter(c => c.staff_num.toString().includes(searchQuery)),
+    staff_allocation: allocations.filter(a => a.staff_num.toString().includes(searchQuery))
+  };
 
   return (
     <>
       <Box sx={{ maxHeight: '1000vh', width: '100%', backgroundColor: '#E7F3F5', display: 'flex', flexWrap: 'wrap', alignContent: 'flex-start' }}>
         <DashboardNavigation />
 
-        <Section title="Staff" data={filteredStaffs} fetchFunction={fetchStaffs} openDialog={openDialog} handleSearch={handleSearch} />
-        <Section title="Qualification" data={qualifications} fetchFunction={fetchQualifications} openDialog={openDialog} />
-        <Section title="Work Experience" data={experiences} fetchFunction={fetchExperiences} openDialog={openDialog} />
-        <Section title="Employment Contract" data={contracts} fetchFunction={fetchContracts} openDialog={openDialog} />
-        <Section title="Staff Allocation" data={allocations} fetchFunction={fetchAllocations} openDialog={openDialog} />
+        <Section title="Staff" data={filteredData.staff} fetchFunction={fetchStaffs} openDialog={openDialog} handleSearch={handleSearch} />
+        <Section title="Qualification" data={filteredData.qualification} fetchFunction={fetchQualifications} openDialog={openDialog} handleSearch={handleSearch} />
+        <Section title="Work Experience" data={filteredData.work_experience} fetchFunction={fetchExperiences} openDialog={openDialog} handleSearch={handleSearch} />
+        <Section title="Employment Contract" data={filteredData.employment_contract} fetchFunction={fetchContracts} openDialog={openDialog} handleSearch={handleSearch} />
+        <Section title="Staff Allocation" data={filteredData.staff_allocation} fetchFunction={fetchAllocations} openDialog={openDialog} handleSearch={handleSearch} />
       </Box>
 
       <Dialog open={dialogOpen} onClose={closeDialog}>
@@ -245,7 +231,7 @@ function Section({ title, data, fetchFunction, openDialog, handleSearch }) {
 }
 
 function renderDialogContent(type, table, data, setData) {
-   const fields = getTableFields(table);
+   const fields = type === 'delete' ? ['staff_num'] : getTableFields(table);
  
    return fields.map((field) => (
      <TextField
@@ -258,7 +244,7 @@ function renderDialogContent(type, table, data, setData) {
        onChange={(e) => setData({ ...data, [field]: e.target.value })}
      />
    ));
- }
+}
 
 function getTableFields(table) {
   switch (table) {
