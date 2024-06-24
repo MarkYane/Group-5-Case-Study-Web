@@ -1,13 +1,12 @@
-import { Box, Button, Typography, List, ListItem, ListItemText } from '@mui/material';
+import { Box, Typography, List, ListItem } from '@mui/material';
 import './Dashboard.css'
-import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
-import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
-import { Link, Navigate, useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import DashboardNavigation from './Navigations/DashboardNavigation';
-function Dashboard({token}){
-    // token.user.user_metadata.FULLNAME - change FULLNAME to whatever user data u want to access
-    const numb = 4;
-    let navigate = useNavigate()
+import { supabase } from '../client';
+import { useState, useEffect } from 'react';
+
+function Dashboard({ token }) {
+    const navigate = useNavigate();
     const menuItems = [
         {
             text: 'Patients',
@@ -25,8 +24,63 @@ function Dashboard({token}){
             text: 'Supplies',
             path: '/supplies'
         }
-    ]
-    return(
+    ];
+    const [patientCount, setPatientCount] = useState(0);
+    const [wardCount, setWardCount] = useState(0);
+    const [staffCount, setStaffCount] = useState(0);
+    useEffect(() => {
+        fetchPatient();
+        fetchWard();
+        fetchStaff();
+    }, []);
+
+    const fetchPatient = async () => {
+        try {
+            let { count, error } = await supabase
+                .from('patients')
+                .select('*', { count: 'exact', head: true });
+
+            if (error) {
+                alert(error);
+            } else {
+                setPatientCount(count);
+            }
+        } catch (error) {
+            console.error('Error fetching row count:', error);
+        }
+    };
+
+    const fetchWard = async () => {
+        try {
+            let { count, error } = await supabase
+                .from('ward')
+                .select('*', { count: 'exact', head: true });
+
+            if (error) {
+                alert(error);
+            } else {
+                setWardCount(count);
+            }
+        } catch (error) {
+            console.error('Error fetching row count:', error);
+        }
+    };
+    const fetchStaff = async () => {
+        try {
+            let { count, error } = await supabase
+                .from('staff')
+                .select('*', { count: 'exact', head: true });
+
+            if (error) {
+                alert(error);
+            } else {
+                setStaffCount(count);
+            }
+        } catch (error) {
+            console.error('Error fetching row count:', error);
+        }
+    };
+    return (
         <>
             {/* Whole Container for Dashboard.jsx */}
             <Box sx={{
@@ -37,10 +91,10 @@ function Dashboard({token}){
                 flexWrap: 'wrap',
                 alignContent: 'flex-start'
             }}>
-                <DashboardNavigation/>
+                <DashboardNavigation />
 
                 {/*Dashboard Box  */}
-                <Box sx={{ 
+                <Box sx={{
                     height: '40vh',
                     width: '50%',
                     backgroundColor: '#E7F3F5',
@@ -60,7 +114,7 @@ function Dashboard({token}){
 
                     {/* ---- START ---- Totality Box */}
                     <Box sx={{
-                        height:'9vh',
+                        height: '9vh',
                         width: '98%',
                         backgroundColor: 'white',
                         display: 'flex',
@@ -71,9 +125,9 @@ function Dashboard({token}){
                             <Typography sx={{
                                 fontSize: '1.5rem',
                                 fontFamily: 'Nunito Sans, Sans-serif',
-                                color:'black',
+                                color: 'black',
                                 paddingLeft: '7%'
-                            }}>Total Patients : {numb}</Typography>
+                            }}>Total Patients : {patientCount}</Typography>
                         </Box>
 
                         <Box className='total'>
@@ -81,52 +135,24 @@ function Dashboard({token}){
                             <Typography sx={{
                                 fontSize: '1.5rem',
                                 fontFamily: 'Nunito Sans, Sans-serif',
-                                color:'black',
+                                color: 'black',
                                 paddingLeft: '7%'
-                            }}>Total Staffs : {numb}</Typography>
+                            }}>Total Staffs : {staffCount}</Typography>
                         </Box>
 
                         <Box className='total'>
-                        <div className='chart' id='wardChart'></div>
-                        <Typography sx={{
+                            <div className='chart' id='wardChart'></div>
+                            <Typography sx={{
                                 fontSize: '1.5rem',
                                 fontFamily: 'Nunito Sans, Sans-serif',
-                                color:'black',
+                                color: 'black',
                                 paddingLeft: '7%'
-                            }}>Total Wards : {numb}</Typography>
+                            }}>Total Wards : {wardCount}</Typography>
                         </Box>
 
                     </Box>
                     {/* ---- END ----Totality Box */}
 
-                    <Box sx={{
-                        width: '47%',
-                        height: '22vh',
-                        backgroundColor: 'white',
-                        marginTop: '2%',
-                        display: 'flex',
-                        flexWrap: 'wrap',
-                        alignItems: 'center'
-                    }}>
-                        {/* Pie chart for Available Rooms */}
-                        <div className='availableChart'></div>               
-
-                    </Box>
-
-                    <Box sx={{
-                        width: '47%',
-                        height: '22vh',
-                        backgroundColor: 'white',
-                        marginTop: '2%',
-                        marginLeft: '4%',
-                        display: 'flex',
-                        flexWrap: 'wrap',
-                        alignItems: 'center'
-                    }}>
-                        {/* Pie chart for Available Supplies */}
-                        <div className='availableChart'></div> 
-
-                    </Box>
                 </Box>
                 {/* Recents Box */}
                 <Box sx={{
@@ -144,11 +170,11 @@ function Dashboard({token}){
                         fontWeight: 'bold',
                         marginBottom: '2%',
                         marginRight: '90%'
-                    }}>RECENTS</Typography>
+                    }}>Members</Typography>
                     <List sx={{
                         maxHeight: '33.2vh',
-                        overflow: 'auto',
-                        width: '99%'
+                        width: '99%',
+                        paddingTop: 0,
                     }}>
                         {/* Diri mabutang history sa query */}
                         <ListItem sx={{
@@ -157,7 +183,7 @@ function Dashboard({token}){
                             <Typography sx={{
                                 fontSize: '1.5rem'
                             }}>
-                                Lorem ipsum dolor sit amet consectetur adipisicing elit. Consectetur, molestiae? Atque accusantium at excepturi unde velit! Hic nobis animi odio explicabo, maiores voluptatum minima sunt architecto accusantium maxime, veritatis esse.
+                                Ainez Anquillano
                             </Typography>
                         </ListItem>
 
@@ -167,26 +193,17 @@ function Dashboard({token}){
                             <Typography sx={{
                                 fontSize: '1.5rem'
                             }}>
-                                Lorem ipsum dolor sit amet consectetur adipisicing elit. Consectetur, molestiae? Atque accusantium at excepturi unde velit! Hic nobis animi odio explicabo, maiores voluptatum minima sunt architecto accusantium maxime, veritatis esse.
+                                Richelle Mae Arat
                             </Typography>
                         </ListItem>
-                        
+
                         <ListItem sx={{
                             backgroundColor: 'white'
                         }}>
                             <Typography sx={{
                                 fontSize: '1.5rem'
                             }}>
-                                Lorem ipsum dolor sit amet consectetur adipisicing elit. Consectetur, molestiae? Atque accusantium at excepturi unde velit! Hic nobis animi odio explicabo, maiores voluptatum minima sunt architecto accusantium maxime, veritatis esse.
-                            </Typography>
-                        </ListItem>
-                        <ListItem sx={{
-                            backgroundColor: 'white'
-                        }}>
-                            <Typography sx={{
-                                fontSize: '1.5rem'
-                            }}>
-                                Lorem ipsum dolor sit amet consectetur adipisicing elit. Consectetur, molestiae? Atque accusantium at excepturi unde velit! Hic nobis animi odio explicabo, maiores voluptatum minima sunt architecto accusantium maxime, veritatis esse.
+                                Jeany Enterina
                             </Typography>
                         </ListItem>
                         <ListItem sx={{
@@ -195,18 +212,10 @@ function Dashboard({token}){
                             <Typography sx={{
                                 fontSize: '1.5rem'
                             }}>
-                                Lorem ipsum dolor sit amet consectetur adipisicing elit. Consectetur, molestiae? Atque accusantium at excepturi unde velit! Hic nobis animi odio explicabo, maiores voluptatum minima sunt architecto accusantium maxime, veritatis esse.
+                                Jan Ruel G. Nacua
                             </Typography>
                         </ListItem>
-                        <ListItem sx={{
-                            backgroundColor: 'white'
-                        }}>
-                            <Typography sx={{
-                                fontSize: '1.5rem'
-                            }}>
-                                Lorem ipsum dolor sit amet consectetur adipisicing elit. Consectetur, molestiae? Atque accusantium at excepturi unde velit! Hic nobis animi odio explicabo, maiores voluptatum minima sunt architecto accusantium maxime, veritatis esse.
-                            </Typography>
-                        </ListItem>
+
                     </List>
                 </Box>
             </Box>
