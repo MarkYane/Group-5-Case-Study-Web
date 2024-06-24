@@ -7,6 +7,7 @@ import SearchIcon from '@mui/icons-material/Search';
 
 function PatientTab({ token }) {
   const [patients, setPatients] = useState([]);
+  const [filteredPatients, setFilteredPatients] = useState([]);
   const [nextOfKin, setNextOfKin] = useState([]);
   const [localDoctors, setLocalDoctors] = useState([]);
 
@@ -36,6 +37,7 @@ function PatientTab({ token }) {
   async function fetchPatients() {
     const { data } = await supabase.from('patients').select('*');
     setPatients(data);
+    setFilteredPatients(data);
   }
 
   async function fetchNextOfKin(patientNumber) {
@@ -53,7 +55,13 @@ function PatientTab({ token }) {
 
 
   const handlePatientSearch = () => {
-    fetchPatientsDetails(patientNum);
+    if (patientNum) {
+      const filtered = patients.filter(patient => patient.patient_num.toString() === patientNum.toString());
+      console.log('Filtered Patients:', filtered); // Debugging statement
+      setFilteredPatients(Array.isArray(filtered) ? filtered : []);
+    } else {
+      setFilteredPatients(patients); // Reset to full list if search is empty
+    }
   };
 
   const handleKinSearch = () => {
@@ -82,7 +90,7 @@ function PatientTab({ token }) {
       ...initialData,
     });
     setOpenDialogNextOfKin(true);
-    setOpenDialogPatient(false); // Ensure other dialog is closed
+    setOpenDialogPatient(false);
   };
 
   const handleCloseDialogNextOfKin = () => {
@@ -106,7 +114,7 @@ function PatientTab({ token }) {
       ...initialData,
     });
     setOpenDialogPatient(true);
-    setOpenDialogNextOfKin(false); // Ensure other dialog is closed
+    setOpenDialogNextOfKin(false);
   };
 
   const handleCloseDialogPatient = () => {
@@ -125,7 +133,7 @@ function PatientTab({ token }) {
       ...initialData,
     });
     setOpenDialogLocalDoctor(true);
-    setOpenDialogPatient(false); // Ensure other dialog is closed
+    setOpenDialogPatient(false); 
   };
 
   const handleCloseDialogLocalDoctor = () => {
@@ -386,7 +394,7 @@ function PatientTab({ token }) {
                 </tr>
               </thead>
               <tbody>
-                {patients.map((patient) =>
+                {filteredPatients.map((patient) =>
                   <tr key={patient.patient_num}>
                     <td>{patient.patient_num}</td>
                     <td>{patient.first_name}</td>
