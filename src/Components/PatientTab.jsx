@@ -6,19 +6,28 @@ import DashboardNavigation from './Navigations/DashboardNavigation';
 import SearchIcon from '@mui/icons-material/Search';
 
 function PatientTab({ token }) {
+
+  // State variables and filtered versions
   const [patients, setPatients] = useState([]);
   const [filteredPatients, setFilteredPatients] = useState([]);
   const [nextOfKin, setNextOfKin] = useState([]);
+  const [filteredNextOfKin, setFilteredNextOfKin] = useState([]);
   const [localDoctors, setLocalDoctors] = useState([]);
+  const [filteredLocalDoctors, setFilteredLocalDoctors] = useState([]);
 
+  // State variables for search input values
   const [patientNum, setPatientNum] = useState('');
   const [kinPatientNum, setKinPatientNum] = useState('');
   const [doctorClinicNum, setDoctorClinicNum] = useState('');
   
-
+  // State variables for dialog management
   const [openDialogPatient, setOpenDialogPatient] = useState(false);
   const [dialogTitlePatient, setDialogTitlePatient] = useState('');
   const [formDataPatient, setFormDataPatient] = useState({});
+
+  const [selectedPatient, setSelectedPatient] = useState(null);
+  const [medicationList, setMedicationList] = useState([]);
+  const [openMedicationDialog, setOpenMedicationDialog] = useState(false);
 
   const [openDialogNextOfKin, setOpenDialogNextOfKin] = useState(false);
   const [dialogTitleNextOfKin, setDialogTitleNextOfKin] = useState('');
@@ -29,26 +38,45 @@ function PatientTab({ token }) {
   const [formDataLocalDoctor, setFormDataLocalDoctor] = useState({});
 
 
-
+  // Fetch data on component mount
   useEffect(() => {
     fetchPatients();
+    fetchNextOfKin();
+    fetchLocalDoctors();
   }, []);
 
+  // Fetch data from supabase
   async function fetchPatients() {
     const { data } = await supabase.from('patients').select('*');
     setPatients(data);
     setFilteredPatients(data);
   }
 
-  async function fetchNextOfKin(patientNumber) {
-    const { data } = await supabase.from('next_of_kin').select('*').eq('patient_num', patientNumber);
+  async function fetchNextOfKin() {
+    const { data } = await supabase.from('next_of_kin').select('*');
     setNextOfKin(data);
+    setFilteredNextOfKin(data);    
   }
 
-  async function fetchLocalDoctors(clinicNumber) {
-    const { data } = await supabase.from('local_doctors').select('*').eq('clinic_num', clinicNumber);
+  async function fetchLocalDoctors() {
+    const { data } = await supabase.from('local_doctors').select('*');
     setLocalDoctors(data);
+    setFilteredLocalDoctors(data);
   }
+
+  const fetchMedicationList = async (patient_num) => {
+    const { data, error } = await supabase
+      .from('patient_medication')
+      .select('*, patient_medication_list(drug_num)')
+      .eq('patient_num', patient_num);
+
+    if (error) {
+      console.error('Error fetching medication data:', error);
+      return [];
+    }
+
+    return data;
+  };
 
 
 
@@ -65,14 +93,66 @@ function PatientTab({ token }) {
   };
 
   const handleKinSearch = () => {
-    fetchNextOfKin(kinPatientNum);
+    if (kinPatientNum) {
+      const filtered = nextOfKin.filter(kin => kin.patient_num.toString() === kinPatientNum.toString());
+      console.log('Filtered Next of Kin:', filtered); // Debugging statement
+      setFilteredNextOfKin(Array.isArray(filtered) ? filtered : []);
+    } else {
+      setFilteredNextOfKin(nextOfKin); // Reset to full list if search is empty
+    }
   };
 
   const handleDoctorSearch = () => {
-    fetchLocalDoctors(doctorClinicNum);
+    if (doctorClinicNum) {
+      const filtered = localDoctors.filter(doctor => doctor.clinic_num.toString() === doctorClinicNum.toString());
+      console.log('Filtered Local Doctors:', filtered); // Debugging statement
+      setFilteredLocalDoctors(Array.isArray(filtered) ? filtered : []);
+    } else {
+      setFilteredLocalDoctors(localDoctors); // Reset to full list if search is empty
+    }
   };
 
 
+
+
+
+
+  const handleOpenDialogPatient = (title, initialData = {}) => {
+    setDialogTitlePatient(title);
+    setFormDataPatient({
+      patient_num: '',
+      first_name: '',
+      last_name: '',
+      address: '',
+      tel_num: '',
+      date_of_birth: '',
+      sex: '',
+      marital_status: '',
+      registered_date: '',
+      clinic_num: '',
+      ...initialData,
+    });
+    setOpenDialogPatient(true);
+    setOpenDialogNextOfKin(false);
+  };
+
+  const handleCloseDialogPatient = () => {
+    setOpenDialogPatient(false);
+    setFormDataPatient({});
+  };
+
+  const handleRowClick = async (patient) => {
+    setSelectedPatient(patient);
+    const medications = await fetchMedicationList(patient.patient_num);
+    setMedicationList(medications);
+    setOpenMedicationDialog(true);
+  };
+
+  const handleCloseMedicationDialog = () => {
+    setOpenMedicationDialog(false);
+    setSelectedPatient(null);
+    setMedicationList([]);
+  };
 
 
 
@@ -98,29 +178,9 @@ function PatientTab({ token }) {
     setFormDataNextOfKin({});
   };
 
-  const handleOpenDialogPatient = (title, initialData = {}) => {
-    setDialogTitlePatient(title);
-    setFormDataPatient({
-      patient_num: '',
-      first_name: '',
-      last_name: '',
-      address: '',
-      tel_num: '',
-      date_of_birth: '',
-      sex: '',
-      marital_status: '',
-      registered_date: '',
-      clinic_num: '',
-      ...initialData,
-    });
-    setOpenDialogPatient(true);
-    setOpenDialogNextOfKin(false);
-  };
 
-  const handleCloseDialogPatient = () => {
-    setOpenDialogPatient(false);
-    setFormDataPatient({});
-  };
+
+
 
   const handleOpenDialogLocalDoctor = (title, initialData = {}) => {
     setDialogTitleLocalDoctor(title);
@@ -213,7 +273,7 @@ function PatientTab({ token }) {
         console.error('Error inserting next of kin:', error);
       } else {
         handleCloseDialogNextOfKin();
-        fetchNextOfKin(formDataNextOfKin.patient_num); // Ensure fetchNextOfKin function works as intended
+        fetchNextOfKin(); // Ensure fetchNextOfKin function works as intended
       }
     } else if (dialogTitleNextOfKin === 'Update Next of Kin') {
       const { error } = await supabase.from('next_of_kin').update(formDataNextOfKin).eq('kin_id', formDataNextOfKin.kin_id);
@@ -221,7 +281,7 @@ function PatientTab({ token }) {
         console.error('Error updating next of kin:', error);
       } else {
         handleCloseDialogNextOfKin();
-        fetchNextOfKin(formDataNextOfKin.patient_num); // Ensure fetchNextOfKin function works as intended
+        fetchNextOfKin(); // Ensure fetchNextOfKin function works as intended
       }
     } else if (dialogTitleNextOfKin === 'Delete Next of Kin') {
       const { error } = await supabase.from('next_of_kin').delete().eq('kin_id', formDataNextOfKin.kin_id);
@@ -229,7 +289,7 @@ function PatientTab({ token }) {
         console.error('Error deleting next of kin:', error);
       } else {
         handleCloseDialogNextOfKin();
-        fetchNextOfKin(formDataNextOfKin.patient_num); // Ensure fetchNextOfKin function works as intended
+        fetchNextOfKin(); // Ensure fetchNextOfKin function works as intended
       }
     }
 
@@ -244,7 +304,7 @@ function PatientTab({ token }) {
         console.error('Error inserting local doctor:', error);
       } else {
         handleCloseDialogLocalDoctor();
-        fetchLocalDoctors(formDataLocalDoctor.clinic_num); // Ensure fetchLocalDoctors function works as intended
+        fetchLocalDoctors(); // Ensure fetchLocalDoctors function works as intended
       }
     } else if (dialogTitleLocalDoctor === 'Update Local Doctor') {
       const { error } = await supabase.from('local_doctors').update(formDataLocalDoctor).eq('clinic_num', formDataLocalDoctor.clinic_num);
@@ -252,7 +312,7 @@ function PatientTab({ token }) {
         console.error('Error updating local doctor:', error);
       } else {
         handleCloseDialogLocalDoctor();
-        fetchLocalDoctors(formDataLocalDoctor.clinic_num); // Ensure fetchLocalDoctors function works as intended
+        fetchLocalDoctors(); // Ensure fetchLocalDoctors function works as intended
       }
     } else if (dialogTitleLocalDoctor === 'Delete Local Doctor') {
       const { error } = await supabase.from('local_doctors').delete().eq('clinic_num', formDataLocalDoctor.clinic_num);
@@ -260,7 +320,7 @@ function PatientTab({ token }) {
         console.error('Error deleting local doctor:', error);
       } else {
         handleCloseDialogLocalDoctor();
-        fetchLocalDoctors(formDataLocalDoctor.clinic_num); // Ensure fetchLocalDoctors function works as intended
+        fetchLocalDoctors(); // Ensure fetchLocalDoctors function works as intended
       }
     }
   };
@@ -273,7 +333,7 @@ function PatientTab({ token }) {
     <>
       <Box sx={{
         maxHeight: '100vh',
-        width: '100%',
+        width: '100vw',
         backgroundColor: '#E7F3F5',
         display: 'flex',
         flexWrap: 'wrap',
@@ -378,7 +438,6 @@ function PatientTab({ token }) {
             backgroundColor: 'white',
             height: '37vh',
             width: '100%',
-            paddingTop: '50px',
             overflow: 'auto'
           }}>
             <table className="content-table">
@@ -395,7 +454,7 @@ function PatientTab({ token }) {
               </thead>
               <tbody>
                 {filteredPatients.map((patient) =>
-                  <tr key={patient.patient_num}>
+                  <tr key={patient.patient_num} onClick={() => handleRowClick(patient)}>
                     <td>{patient.patient_num}</td>
                     <td>{patient.first_name}</td>
                     <td>{patient.last_name}</td>
@@ -516,9 +575,32 @@ function PatientTab({ token }) {
             <Button type='button' onClick={handleSubmitPatient}>Submit</Button>
           </DialogActions>
         </Dialog>
+
+        {/* Medication List Dialog */}
+        <Dialog open={openMedicationDialog} onClose={handleCloseMedicationDialog}>
+          <DialogTitle>Medication List for {selectedPatient?.first_name} {selectedPatient?.last_name}</DialogTitle>
+          <DialogContent>
+            {medicationList.length > 0 ? (
+              <div style={{ fontFamily: 'Nunito Sans, sans-serif', fontSize: '20px' }}>
+                {medicationList.map((medication) => (
+                  <div key={medication.medical_num} style={{ marginBottom: '10px' }}>
+                    <p style={{ margin: '0' }}>Drug Number: {medication.drug_num}</p>
+                    <p style={{ margin: '0' }}>Units Per Day: {medication.units_per_day}</p>
+                    <p style={{ margin: '0' }}>Start Date: {medication.start_date}</p>
+                    <p style={{ margin: '0' }}>Finish Date: {medication.finish_date}</p>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p style={{ fontFamily: 'Nunito Sans, sans-serif', fontSize: '20px' }}>No medications found.</p>
+            )}
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleCloseMedicationDialog}>Close</Button>
+          </DialogActions>
+        </Dialog>
       </Box>
-
-
+    
 
 
 
@@ -638,6 +720,7 @@ function PatientTab({ token }) {
             backgroundColor: 'white',
             height: '37vh',
             width: '100%',
+            overflow: 'auto'
           }}>
             <table className="content-table">
               <thead>
@@ -652,7 +735,7 @@ function PatientTab({ token }) {
                 </tr>
               </thead>
               <tbody>
-                {nextOfKin.map((kin) =>
+                {filteredNextOfKin.map((kin) =>
                   <tr key={kin.kin_id}>
                     <td>{kin.kin_id}</td>
                     <td>{kin.patient_num}</td>
@@ -863,10 +946,12 @@ function PatientTab({ token }) {
             backgroundColor: 'white',
             height: '37vh',
             width: '100%',
+            overflow: 'auto'
           }}>
             <table className="content-table">
               <thead>
                 <tr>
+                  <th>Clinic Number</th>
                   <th>First Name</th>
                   <th>Last Name</th>
                   <th>Tel Num</th>
@@ -874,8 +959,9 @@ function PatientTab({ token }) {
                 </tr>
               </thead>
               <tbody>
-                {localDoctors.map((doctor) =>
+                {filteredLocalDoctors.map((doctor) =>
                   <tr key={doctor.clinic_num}>
+                    <td>{doctor.clinic_num}</td>
                     <td>{doctor.first_name}</td>
                     <td>{doctor.last_name}</td>
                     <td>{doctor.tel_num}</td>
