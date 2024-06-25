@@ -27,27 +27,27 @@ function Staff({ token }) {
 
   async function fetchStaffs() {
     const { data } = await supabase.from('staff').select('*');
-    setStaffs(data);
+    setStaffs(data || []);
   }
 
   async function fetchQualifications() {
     const { data } = await supabase.rpc('get_staff_qualifications');
-    setQualifications(data);
+    setQualifications(data || []);
   }
 
   async function fetchContracts() {
     const { data } = await supabase.rpc('get_staff_employment_contracts');
-    setContracts(data);
+    setContracts(data || []);
   }
 
   async function fetchExperiences() {
     const { data } = await supabase.rpc('get_staff_work_experience');
-    setExperiences(data);
+    setExperiences(data || []);
   }
 
   async function fetchAllocations() {
     const { data } = await supabase.from('staff_allocation').select('*');
-    setAllocations(data);
+    setAllocations(data || []);
   }
 
   async function handleAdd() {
@@ -76,6 +76,7 @@ function Staff({ token }) {
       console.error('Error adding data:', error);
     }
   }
+  
 
   async function handleUpdate() {
     try {
@@ -245,7 +246,6 @@ function renderDialogContent(type, table, data, setData) {
      />
    ));
 }
-
 function getTableFields(table) {
   switch (table) {
     case 'staff':
