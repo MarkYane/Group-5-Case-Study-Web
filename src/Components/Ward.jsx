@@ -106,6 +106,8 @@ function Ward({token}){
       alert(error)
         
       closeWardModal(); // Close modal 1 after saving
+      window.location.reload();
+
     };
 
    const handleWardUpdate = async() => {
@@ -122,6 +124,7 @@ function Ward({token}){
         }])
         .eq('ward_num', input1);
       closeUpdateWard()
+      window.location.reload();
 
    }
 
@@ -131,7 +134,8 @@ function Ward({token}){
    .from('ward')
    .delete()
    .eq('ward_num', input1)
-        
+   window.location.reload();
+
    }
     //Modal for Ward Surgical and Nonsurgical Supplies
 
