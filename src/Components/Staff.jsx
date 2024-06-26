@@ -1,287 +1,1691 @@
-import './Staff.css';
-import { Box, Button, TextField, Typography, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
-import { Search as SearchIcon } from '@mui/icons-material';
-import { useEffect, useState } from 'react';
+import './Ward.css'
+import { Box, Button, InputAdornment, Modal, TextField, Typography} from '@mui/material';
+import { Link, Navigate, useNavigate, useLocation } from 'react-router-dom';
 import DashboardNavigation from './Navigations/DashboardNavigation';
+import SearchIcon from '@mui/icons-material/Search';
+import { useState, useEffect } from 'react';
 import { supabase } from '../client';
-
-function Staff({ token }) {
-  const [staffs, setStaffs] = useState([]);
-  const [qualifications, setQualifications] = useState([]);
-  const [contracts, setContracts] = useState([]);
-  const [experiences, setExperiences] = useState([]);
-  const [allocations, setAllocations] = useState([]);
-  const [activeTable, setActiveTable] = useState('');
-  const [dialogOpen, setDialogOpen] = useState(false);
-  const [dialogType, setDialogType] = useState('');
-  const [dialogData, setDialogData] = useState({});
-  const [searchQuery, setSearchQuery] = useState('');
-
-  useEffect(() => {
-    fetchStaffs();
-    fetchQualifications();
-    fetchContracts();
-    fetchExperiences();
-    fetchAllocations();
-  }, []);
-
-  async function fetchStaffs() {
-    const { data } = await supabase.from('staff').select('*');
-    setStaffs(data || []);
-  }
-
-  async function fetchQualifications() {
-    const { data } = await supabase.rpc('get_staff_qualifications');
-    setQualifications(data || []);
-  }
-
-  async function fetchContracts() {
-    const { data } = await supabase.rpc('get_staff_employment_contracts');
-    setContracts(data || []);
-  }
-
-  async function fetchExperiences() {
-    const { data } = await supabase.rpc('get_staff_work_experience');
-    setExperiences(data || []);
-  }
-
-  async function fetchAllocations() {
-    const { data } = await supabase.from('staff_allocation').select('*');
-    setAllocations(data || []);
-  }
-
-  async function handleAdd() {
-    try {
-      switch (activeTable) {
-        case 'staff':
-          await supabase.from('staff').insert([dialogData]);
-          break;
-        case 'qualification':
-          await supabase.from('qualification').insert([dialogData]);
-          break;
-        case 'work_experience':
-          await supabase.from('work_experience').insert([dialogData]);
-          break;
-        case 'employment_contract':
-          await supabase.from('employment_contract').insert([dialogData]);
-          break;
-        case 'staff_allocation':
-          await supabase.from('staff_allocation').insert([dialogData]);
-          break;
-        default:
-          throw new Error('Invalid active table');
-      }
-      window.location.reload();
-    } catch (error) {
-      console.error('Error adding data:', error);
-    }
-  }
+function Staff({token}){
   
 
-  async function handleUpdate() {
-    try {
-      switch (activeTable) {
-        case 'staff':
-          await supabase.from('staff').update(dialogData).eq('staff_num', dialogData.staff_num);
-          break;
-        case 'qualification':
-          await supabase.from('qualification').update(dialogData).eq('staff_num', dialogData.staff_num);
-          break;
-        case 'work_experience':
-          await supabase.from('work_experience').update(dialogData).eq('staff_num', dialogData.staff_num);
-          break;
-        case 'employment_contract':
-          await supabase.from('employment_contract').update(dialogData).eq('staff_num', dialogData.staff_num);
-          break;
-        case 'staff_allocation':
-          await supabase.from('staff_allocation').update(dialogData).eq('staff_num', dialogData.staff_num);
-          break;
-        default:
-          throw new Error('Invalid active table');
-      }
+   const [input1, setInput1] = useState('');
+   const [input2, setInput2] = useState('');
+   const [input3, setInput3] = useState('');
+   const [input4, setInput4] = useState('');
+   const [input5, setInput5] = useState('');
+   const [input6, setInput6] = useState('');
+   const [input7, setInput7] = useState('');
+   const [input8, setInput8] = useState('');
+   const text1 = (event) => setInput1(event.target.value);
+   const text2 = (event) => setInput2(event.target.value);
+   const text3 = (event) => setInput3(event.target.value);
+   const text4 = (event) => setInput4(event.target.value);
+   const text5 = (event) => setInput5(event.target.value);
+   const text6 = (event) => setInput6(event.target.value);
+   const text7 = (event) => setInput7(event.target.value);
+   const text8 = (event) => setInput8(event.target.value);
+
+   useEffect(() =>{
+      fetchStaff();
+      fetchQualification();
+      fetchWorkExperience();
+      fetchEmploymentContract();
+      fetchStaffAllocation();
+   }, [])
+
+   const [wardTable, setWardtable] = useState([])
+   async function fetchStaff(){
+      const {data} = await supabase
+      .from('staff')
+      .select('*')
+      setWardtable(data)
+   }
+
+   const [wardSuppliesTable, setWardSuppliesTable] = useState([]);
+   async function fetchQualification(){
+      let { data, error } = await supabase
+      .rpc('get_staff_qualifications')
+      if (error) alert(error)
+      else setWardSuppliesTable(data)
+   }
+
+   const [wardPharmaceuticalTable, setWardPharmaceuticalTable] = useState([]);
+   async function fetchWorkExperience(){
+      let { data, error } = await supabase
+      .rpc('get_staff_work_experience')
+      if (error) alert(error)
+      else setWardPharmaceuticalTable(data)
+   }
+
+   const [wardPharmRequestTable, setwardPharmRequest] = useState([]);
+   async function fetchEmploymentContract(){
+      
+      let { data, error } = await supabase
+      .rpc('get_staff_employment_contract')
+      if (error) alert(error)
+      else setwardPharmRequest(data)
+
+   }
+
+   const [wardSurgRequestTable, setWardSurgRequestTable] = useState([]);
+   async function fetchStaffAllocation(){
+      
+      let { data, error } = await supabase
+      .rpc('get_staff_allocation')
+      if (error) alert(error)
+      else setWardSurgRequestTable(data)
+
+   }
+   //Modal for ward table
+   const [wardModal, setWardModal] = useState(false);
+   const [updateWardModal, setUpdateWardModal] = useState(false);
+   const [deleteWardModal, setDeleteWardModal] = useState(false);
+   //Add ward
+   const openWardModal = () => setWardModal(true);
+   const closeWardModal = () => setWardModal(false);
+   //Update ward
+   const openUpdateWard = () => setUpdateWardModal(true);
+   const closeUpdateWard = () => setUpdateWardModal(false);
+   //Delete ward
+   const openDeleteWard = () => setDeleteWardModal(true);
+   const closeDeleteWard = () => setDeleteWardModal(false);
+
+
+   const handleAddWard = async() => {
+      
+      const { data, error } = await supabase
+      .from('staff')
+      .insert([
+         {
+      staff_num: input1,
+      first_name: input2,
+      last_name: input3,
+      address: input4,
+      telephone_number : input5,
+      date_of_birth : input6,
+      sex : input7,
+      position_held : input8
+      },
+      ])
+      .select()
+      console.log(error)
+        
+      closeWardModal(); // Close modal 1 after saving
       window.location.reload();
-    } catch (error) {
-      console.error('Error updating data:', error);
-    }
-  }
 
-  async function handleDelete() {
-    try {
-      await supabase.from(activeTable).delete().eq('staff_num', dialogData.staff_num);
+    };
+
+   const handleWardUpdate = async() => {
+
+      const { data, error } = await supabase
+        .from('staff')
+        .update(
+         [{
+            staff_num: input1,
+            first_name: input2,
+            last_name: input3,
+            address: input4,
+            telephone_number : input5,
+            date_of_birth : input6,
+            sex : input7,
+            position_held : input8
+        }])
+        .eq('staff_num', input1);
+      closeUpdateWard()
       window.location.reload();
-    } catch (error) {
-      console.error('Error deleting data:', error);
-    }
-  }
 
-  function openDialog(type, table) {
-    setDialogType(type);
-    setActiveTable(table);
-    setDialogOpen(true);
-    if (type === 'delete') {
-      setDialogData({ staff_num: '' });
-    }
-  }
+   }
 
-  function closeDialog() {
-    setDialogOpen(false);
-    setDialogData({});
-  }
+   const handleWardDelete = async() => {
+      
+   const { error } = await supabase
+   .from('staff')
+   .delete()
+   .eq('staff_num', input1)
+   window.location.reload();
 
-  function handleSearch(e) {
-    setSearchQuery(e.target.value);
-  }
+   }
+    //Modal for Ward Surgical and Nonsurgical Supplies
 
-  const filteredData = {
-    staff: staffs.filter(staff => staff.staff_num.toString().includes(searchQuery)),
-    qualification: qualifications.filter(q => q.staff_num.toString().includes(searchQuery)),
-    work_experience: experiences.filter(e => e.staff_num.toString().includes(searchQuery)),
-    employment_contract: contracts.filter(c => c.staff_num.toString().includes(searchQuery)),
-    staff_allocation: allocations.filter(a => a.staff_num.toString().includes(searchQuery))
-  };
+   
+   const [addSurgicalSuppliesModal, setAddSurgicalSuppliesModal] = useState(false);
+   const [deleteSurgicalSuppliesModal, setDeleteSurgicalSuppliesModal] = useState(false);
+   const [updateStaffQualModa, setUpdateStaffQualModal] = useState(false)
+   //Add Surgical Modal
+   const openSurgicalModal = () => setAddSurgicalSuppliesModal(true);
+   const closeSurgicalModal = () => setAddSurgicalSuppliesModal(false);
 
-  return (
-    <>
-      <Box sx={{ maxHeight: '1000vh', width: '100%', backgroundColor: '#E7F3F5', display: 'flex', flexWrap: 'wrap', alignContent: 'flex-start' }}>
-        <DashboardNavigation />
+   //Update Qualification
+   const openStaffQual = () => setUpdateStaffQualModal(true);
+   const closeStaffQual = () => setUpdateStaffQualModal(false);
+   
+   //Delete Surgical Modal
+   const openDeleteSurgicalModal = () => setDeleteSurgicalSuppliesModal(true);
+   const closeDeleteSurgicalModal = () => setDeleteSurgicalSuppliesModal(false);
 
-        <Section title="Staff" data={filteredData.staff} fetchFunction={fetchStaffs} openDialog={openDialog} handleSearch={handleSearch} />
-        <Section title="Qualification" data={filteredData.qualification} fetchFunction={fetchQualifications} openDialog={openDialog} handleSearch={handleSearch} />
-        <Section title="Work Experience" data={filteredData.work_experience} fetchFunction={fetchExperiences} openDialog={openDialog} handleSearch={handleSearch} />
-        <Section title="Employment Contract" data={filteredData.employment_contract} fetchFunction={fetchContracts} openDialog={openDialog} handleSearch={handleSearch} />
-        <Section title="Staff Allocation" data={filteredData.staff_allocation} fetchFunction={fetchAllocations} openDialog={openDialog} handleSearch={handleSearch} />
-      </Box>
+   const handleAddSurgicalModal = async() =>{
+      const { data, error } = await supabase
+      .from('qualification')
+      .insert([
+        {
+          staff_num: input1,
+          date_of_qualification: input2,
+          type: input3,
+          name_of_institution: input4
+        },
+      ]); 
+      closeSurgicalModal()
+      window.location.reload()
 
-      <Dialog open={dialogOpen} onClose={closeDialog}>
-        <DialogTitle>{dialogType.charAt(0).toUpperCase() + dialogType.slice(1)} {activeTable.replace('_', ' ').charAt(0).toUpperCase() + activeTable.replace('_', ' ').slice(1)}</DialogTitle>
-        <DialogContent>
-          {renderDialogContent(dialogType, activeTable, dialogData, setDialogData)}
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={closeDialog} color="primary">Cancel</Button>
-          <Button onClick={() => handleDialogSubmit(dialogType, activeTable, dialogData)} color="primary">Submit</Button>
-        </DialogActions>
-      </Dialog>
-    </>
-  );
-}
+   }
 
-function Section({ title, data, fetchFunction, openDialog, handleSearch }) {
-  useEffect(() => {
-    fetchFunction();
-  }, [fetchFunction]);
+   const handleQualificationUpdate = async() =>{
+      const { data, error } = await supabase
+        .from('qualification')
+        .update(
+         [{
+            staff_num: input1,
+            date_of_qualification: input2,
+            type: input3,
+            name_of_institution: input4
+        }])
+        .eq('staff_num', input1);
+      closeUpdateWard()
+      window.location.reload();
+   }
 
-  const tableKey = title.toLowerCase().replace(' ', '_');
+   const handleDeleteSurgicalModal = async() =>{
+      const { data, error } = await supabase
+        .from('qualification')
+        .delete()
+        .eq('staff_num', input1)
 
-  return (
-    <Box
-      sx={{
-        height: 'auto',
-        width: '83%',
-        backgroundColor: 'white',
-        margin: '2% 2% 2% 12%',
-        padding: 0,
-        flexWrap: 'wrap',
-        alignContent: 'flex-start',
-        border: '0px solid black'
-      }}
-    >
-      <Typography
-        variant="h4"
-        sx={{
-          fontFamily: 'Nunito Sans, Sans-serif',
-          marginBottom: '1%',
-          fontWeight: 'bold',
-          backgroundColor: '#E7F3F5',
-          width: '100%'
-        }}
-      >
-        {title}
-      </Typography>
-      <Box sx={{ height: '4vh', width: '100%', backgroundColor: 'white', display: 'flex', paddingLeft: '2%' }}>
-        <SearchIcon sx={{ color: 'action.active', mr: 0, my: 2.6 }} />
-        <TextField size="medium" id="input-with-sx" label={`Enter ${title === "Staff" ? "staff" : "staff"} number`} variant="standard" onChange={handleSearch} />
-      </Box>
-      <Box sx={{ backgroundColor: 'white', width: '100%' }}>
-        <table className="staff-content-table">
-          <thead>
-            <tr>
-              {Object.keys(data[0] || {}).map((key) => (
-                <th key={key}>{key.replace('_', ' ').toUpperCase()}</th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {data.map((row, idx) => (
-              <tr key={idx}>
-                {Object.values(row).map((value, idx) => (
-                  <td key={idx}>{value}</td>
-                ))}
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </Box>
-      <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: '2%' }}>
-        <Button onClick={() => openDialog('add', tableKey)} sx={{ margin: '0 1%', backgroundColor: '#26ABAA', color: 'white' }}>Add</Button>
-        <Button onClick={() => openDialog('update', tableKey)} sx={{ margin: '0 1%', backgroundColor: '#26ABAA', color: 'white' }}>Update</Button>
-        <Button onClick={() => openDialog('delete', tableKey)} sx={{ margin: '0 1%', backgroundColor: '#FC696A', color: 'white' }}>Delete</Button>
-      </Box>
-    </Box>
-  );
-}
+        closeDeleteSurgicalModal();
+        window.location.reload()
+   }
 
-function renderDialogContent(type, table, data, setData) {
-   const fields = type === 'delete' ? ['staff_num'] : getTableFields(table);
+   //Modal for Ward Pharmaceutical Supplies
+
+   const [addPharmaceuticalModal, setAddPharmaceuticalModal] = useState(false);
+   const [deletePharmaceuticalModal, setDeletePharmaceuticalModal] = useState(false);
+   const [updateWE, setUpdateWE] = useState(false)
+   //Add Pharmaceutical Modal
+   const openAddPharmaceuticalModal = () =>  setAddPharmaceuticalModal(true);
+   const closeAddPharmaceuticalModal = () =>  setAddPharmaceuticalModal(false);
  
-   return fields.map((field) => (
-     <TextField
-       key={field}
-       margin="dense"
-       label={field.replace('_', ' ').toUpperCase()}
-       type="text"
-       fullWidth
-       value={data[field] || ''}
-       onChange={(e) => setData({ ...data, [field]: e.target.value })}
-     />
-   ));
-}
-function getTableFields(table) {
-  switch (table) {
-    case 'staff':
-      return ['staff_num', 'first_name', 'last_name', 'sex', 'date_of_birth', 'telephone_number', 'nin', 'address'];
-    case 'qualification':
-      return ['staff_num', 'date_of_qualification', 'type', 'name_of_institution'];
-    case 'work_experience':
-      return ['staff_num', 'start_date', 'finish_date', 'position', 'name_of_org'];
-    case 'employment_contract':
-      return ['staff_num', 'work_hours', 'type_of_contract', 'type_of_salary_payment'];
-    case 'staff_allocation':
-      return ['staff_num', 'ward_num', 'shift'];
-    default:
-      return [];
-  }
-}
+  //Update Work Experience
+  const openWEModal = () =>  setUpdateWE(true);
+  const closeWEModal = () => setUpdateWE(false)
 
-async function handleDialogSubmit(type, table, data) {
-  try {
-    switch (type) {
-      case 'add':
-        await supabase.from(table).insert([data]);
-        break;
-      case 'update':
-        await supabase.from(table).update(data).eq('staff_num', data.staff_num);
-        break;
-      case 'delete':
-        await supabase.from(table).delete().eq('staff_num', data.staff_num);
-        break;
-      default:
-        throw new Error('Invalid dialog type');
-    }
-    window.location.reload();
-  } catch (error) {
-    console.error('Error performing database operation:', error);
-  }
+   //Delete Pharmaceutical Modal
+   const openDeletePharmaceuticalModal = () => setDeletePharmaceuticalModal(true);
+   const closeDeletePharmaceuticalModal = () =>  setDeletePharmaceuticalModal(false);
+
+   const handleAddPharmaceuticalModal = async() => {
+      const { data, error } = await supabase
+      .from('work_experience')
+      .insert([
+        {
+          staff_num: input1,
+          start_date: input2,
+          finish_date: input3,
+          position: input4,
+          name_of_org: input5
+        },
+      ]); 
+      closeAddPharmaceuticalModal()
+      window.location.reload();
+
+   }
+
+   const handleWEupdate = async() =>{
+      const { data, error } = await supabase
+        .from('work_experience')
+        .update(
+         [{
+         staff_num: input1,
+          start_date: input2,
+          finish_date: input3,
+          position: input4,
+          name_of_org: input5
+        }])
+        .eq('staff_num', input1);
+        closeWEModal()
+      window.location.reload();
+   }
+
+   
+   const handleDeletePharmaceuticalModal = async() => {
+      const { data, error } = await supabase
+        .from('work_ecperience')
+        .delete()
+        .eq('staff_num', input1)
+        closeDeletePharmaceuticalModal()
+        window.location.reload();
+
+   }
+
+   //Modal for pharmaceutical Request 
+   const [addPharmaRequestModal, setAddPharmaRequestModal] = useState(false);
+   const [updatePharmaRequestModal, setUpdatePharmaRequestModal] = useState(false);
+   const [deletePharmaRequestModal, setDeletePharmaRequestModal] = useState(false);
+
+   //Add pharmaceutical Request
+   const openAddPharmaRequestModal = () => setAddPharmaRequestModal(true);
+   const closeAddPharmaRequestModal = () => setAddPharmaRequestModal(false);
+   //Update pharmaceutical Request
+   const openUpdatePharmaRequestModal = () => setUpdatePharmaRequestModal(true);
+   const closeUpdatePharmaRequestModal = () => setUpdatePharmaRequestModal(false);
+   //Deltee pharmaceutical Request
+   const openDeletePharmaRequestModal = () => setDeletePharmaRequestModal(true);
+   const closeDeletePharmaRequestModal = () => setDeletePharmaRequestModal(false);
+
+   const handleAddPharmaRequest = async() => {
+      const { data, error } = await supabase
+      .from('employment_contract')
+      .insert([
+        {
+         staff_num: input1,
+         work_hours: input2,
+         type_of_contract: input3,
+         type_of_salary_payment: input4,
+        },
+      ]); 
+      closeAddPharmaRequestModal()
+      window.location.reload();
+
+   }  
+
+   const handleUpdatePharmaRequest = async() => {
+      const { data, error } = await supabase
+        .from('employment_contract')
+        .update(
+         [{
+         staff_num: input1,
+         work_hours: input2,
+         type_of_contract: input3,
+         type_of_salary_payment: input4,
+        }])
+        .eq('staff_num', input1);
+      closeUpdatePharmaRequestModal()
+      window.location.reload();
+
+   }
+
+   const handleDeletePharmaRequest = async() => {
+      const { error } = await supabase
+      .from('employment_contract')
+      .delete()
+      .eq('staff_num', input1)
+      closeDeletePharmaRequestModal()
+      window.location.reload();
+
+   }
+
+
+   //Modal for Surgical Request 
+   const [addSurgicalRequestModal, setAddSurgicalRequestModal] = useState(false);
+   const [updateSurgicalRequestModal, setUpdateSurgicalRequestModal] = useState(false);
+   const [deleteSurgicalRequestModal, setDeleteSurgicalRequestModal] = useState(false);
+
+   //Add Surgical Request
+   const openAddSurgicalRequestModal = () => setAddSurgicalRequestModal(true);
+   const closeAddSurgicalRequestModal = () => setAddSurgicalRequestModal(false);
+   //Update Surgical Request
+   const openUpdateSurgicalRequestModal = () => setUpdateSurgicalRequestModal(true);
+   const closeUpdateSurgicalRequestModal = () => setUpdateSurgicalRequestModal(false);
+   //Deltee Surgical Request
+   const openDeleteSurgicalRequestModal = () => setDeleteSurgicalRequestModal(true);
+   const closeDeleteSurgicalRequestModal = () => setDeleteSurgicalRequestModal(false);
+
+   const handleAddSurgicalRequest = async() => {
+      const { data, error } = await supabase
+      .from('staff_allocation')
+      .insert([
+        {
+          staff_num: input1,
+          ward_num: input2,
+          shift: input3,
+        },
+      ]); 
+      console.log(error)
+      closeAddSurgicalRequestModal()
+      window.location.reload();
+
+   }
+
+   const handleUpdateSurgicalRequest = async() => {
+      const { data, error } = await supabase
+        .from('staff_allocation')
+        .update(
+         [{
+          staff_num: input1,
+          ward_num: input2,
+          shift: input3,
+        }])
+        .eq('staff_num', input1);
+        closeUpdateSurgicalRequestModal()
+        window.location.reload();
+
+   }
+
+   const handleDeleteSurgicalRequest = async() => {
+      const { error } = await supabase
+      .from('staff_allocation')
+      .delete()
+      .eq('staff_num', input1)
+      closeDeleteSurgicalRequestModal()
+      window.location.reload();
+
+   }
+  return(
+        <>
+            <Box sx={{
+                maxHeight: '1000vh',
+                width: '100%',
+                backgroundColor: '#E7F3F5',
+                display: 'flex',
+                flexWrap: 'wrap',
+                alignContent: 'flex-start'
+            }}>
+
+                <DashboardNavigation/>
+            
+                {/* Ward Container */}
+                <Box sx={{ 
+                    height: '37vh',
+                    width: '83%',
+                    backgroundColor: 'white',
+                    marginLeft: '12%',
+                    marginRight: '2%',
+                    marginTop: '2%',
+                    padding: 0,
+                    display: 'flex',
+                    flexWrap: 'wrap',
+                    alignContent: 'flex-start',
+                    border: '0px solid black'
+                }}>
+                    <Typography variant='h4'sx={{
+                        fontFamily: 'Nunito Sans, Sans-serif',
+                        marginBottom: '1%',
+                        fontWeight: 'bold',
+                        backgroundColor: '#E7F3F5',
+                        width: '100%'
+                    }}>
+                        Staff
+                    </Typography>
+                    {/* Buttons & Input */}
+                    <Box sx={{
+                        height: '4vh',
+                        width: '100%',
+                        backgroundColor: 'white',
+                        display: 'flex',
+                        paddingLeft: '2%'
+                    }}>
+                         <SearchIcon sx={{ color: 'action.active', mr: 0, my: 2.6}} />
+                         <TextField size='medium' id="input-with-sx" label="Enter ward number" variant="standard" />
+
+                         <Button sx={{
+                            height: '70%',
+                            width: '7%',
+                            marginLeft: '2%',
+                            marginTop: '0.5%',
+                            backgroundColor:'#26ABAA',
+                            fontFamily: 'Nunito Sans, Sans-serif',
+                            color: 'white'
+                         }}>
+                            Search
+                         </Button>
+                         <Button
+                           sx={{
+                              height: '70%',
+                              width: '7%',
+                              marginLeft: '54%',
+                              marginTop: '0.5%',
+                              backgroundColor: '#26ABAA',
+                              fontFamily: 'Nunito Sans, Sans-serif',
+                              color: 'white'
+                           }}
+                           onClick={openWardModal}
+                           >
+                           Add
+                           </Button>
+                           <Modal
+                              open={wardModal}
+                              onClose={closeWardModal}
+                              aria-labelledby="modal1-modal-title"
+                              aria-describedby="modal1-modal-description"
+                              >
+                              <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: 400, bgcolor: 'background.paper', boxShadow: 24, p: 4 }}>
+                              <Typography textAlign={'center'}>Add Staff</Typography>
+                                 <TextField
+                                    label="Staff Number"
+                                    value={input1}
+                                    onChange={text1}
+                                    fullWidth
+                                    margin="normal"
+                                 />
+                                 <TextField
+                                    label="First Name"
+                                    value={input2}
+                                    onChange={text2}
+                                    fullWidth
+                                    margin="normal"
+                                 />
+                                 <TextField
+                                    label="Last Name"
+                                    value={input3}
+                                    onChange={text3}
+                                    fullWidth
+                                    margin="normal"
+                                 />
+                                  <TextField
+                                    label="Address"
+                                    value={input4}
+                                    onChange={text4}
+                                    fullWidth
+                                    margin="normal"
+                                 />
+                                  <TextField
+                                    label="Telephone Number"
+                                    value={input5}
+                                    onChange={text5}
+                                    fullWidth
+                                    margin="normal"
+                                 />
+                                  <TextField type='date'
+                                    label="Date of birth"
+                                    value={input6}
+                                    onChange={text6}
+                                    fullWidth
+                                    margin="normal"
+                                 />
+                                  <TextField
+                                    label="Sex"
+                                    value={input7}
+                                    onChange={text7}
+                                    fullWidth
+                                    margin="normal"
+                                 />
+                                  <TextField
+                                    label="Position Held"
+                                    value={input8}
+                                    onChange={text8}
+                                    fullWidth
+                                    margin="normal"
+                                 />
+                                 <Button onClick={handleAddWard}>Submit</Button>
+                              </Box>
+                              </Modal>
+
+                           <Button
+                        sx={{
+                           height: '70%',
+                           width: '7%',
+                           marginLeft: '2%',
+                           marginTop: '0.5%',
+                           backgroundColor: '#26ABAA',
+                           fontFamily: 'Nunito Sans, Sans-serif',
+                           color: 'white'
+                        }}
+                        onClick={() => openUpdateWard()}
+                        >
+                        Update
+                        </Button>
+
+                        <Modal
+                              open={updateWardModal}
+                              onClose={closeUpdateWard}
+                              aria-labelledby="modal1-modal-title"
+                              aria-describedby="modal1-modal-description"
+                              >
+                              <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: 400, bgcolor: 'background.paper', boxShadow: 24, p: 4 }}>
+                                 <Typography textAlign={'center'}>Update Staff</Typography>
+                                 <TextField
+                                    label="Staff Number"
+                                    value={input1}
+                                    onChange={text1}
+                                    fullWidth
+                                    margin="normal"
+                                 />
+                                 <TextField
+                                    label="First Name"
+                                    value={input2}
+                                    onChange={text2}
+                                    fullWidth
+                                    margin="normal"
+                                 />
+                                 <TextField
+                                    label="Last Name"
+                                    value={input3}
+                                    onChange={text3}
+                                    fullWidth
+                                    margin="normal"
+                                 />
+                                  <TextField
+                                    label="Address"
+                                    value={input4}
+                                    onChange={text4}
+                                    fullWidth
+                                    margin="normal"
+                                 />
+                                  <TextField
+                                    label="Telephone Number"
+                                    value={input5}
+                                    onChange={text5}
+                                    fullWidth
+                                    margin="normal"
+                                 />
+                                  <TextField type='date'
+                                    label="Date of birth"
+                                    value={input6}
+                                    onChange={text6}
+                                    fullWidth
+                                    margin="normal"
+                                 />
+                                  <TextField
+                                    label="Sex"
+                                    value={input7}
+                                    onChange={text7}
+                                    fullWidth
+                                    margin="normal"
+                                 />
+                                  <TextField
+                                    label="Position Held"
+                                    value={input8}
+                                    onChange={text8}
+                                    fullWidth
+                                    margin="normal"
+                                 />
+                                 <Button onClick={handleWardUpdate} >Update</Button>
+                              </Box>
+                              </Modal>
+                         <Button sx={{
+                            height: '70%',
+                            width: '7%',
+                            marginLeft: '2%',
+                            marginTop: '0.5%',
+                            backgroundColor:'#FC696A',
+                            fontFamily: 'Nunito Sans, Sans-serif',
+                            color: 'white'
+                         }}
+                         onClick={() => openDeleteWard()}>
+                            Delete
+                         </Button>
+                         
+                        <Modal
+                              open={deleteWardModal}
+                              onClose={closeDeleteWard}
+                              aria-labelledby="modal1-modal-title"
+                              aria-describedby="modal1-modal-description"
+                              >
+                              <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: 400, bgcolor: 'background.paper', boxShadow: 24, p: 4 }}>
+                                 <Typography textAlign={'center'}>Delete Staff</Typography>
+                                 <TextField
+                                    label="Staff Number"
+                                    value={input1}
+                                    onChange={text1}
+                                    fullWidth
+                                    margin="normal"
+                                 />
+                                 <Button onClick={handleWardDelete} >Submit</Button>
+                              </Box>
+                              </Modal>
+                         
+                    </Box>
+                    
+                    {/* Display for Ward stable */}
+
+                    <Box className='scrollable-container' sx={{
+                        backgroundColor: 'white',
+                        height: '37vh',
+                        width: '100%',
+                        
+                    }}>
+                     <table className="ward-content-table">
+                        <thead>
+                           <tr>
+                              <th>Staff Number</th>
+                              <th>First Name</th>
+                              <th>Last Name</th>
+                              <th>Address</th>
+                              <th>Telephone Number</th>
+                              <th>Date of Birth</th>
+                              <th>Sex</th>
+                              <th>Position Held</th>
+                             
+                           </tr>
+                        </thead>
+
+                        <tbody>  
+                           { wardTable.map((attri) =>  
+                              <tr key={attri.staff_num}>
+                                 <td>{attri.staff_num}</td>
+                                 <td>{attri.first_name}</td>
+                                 <td>{attri.last_name}</td>
+                                 <td>{attri.address}</td>
+                                 <td>{attri.telephone_number}</td>
+                                 <td>{attri.date_of_birth}</td>
+                                 <td>{attri.sex}</td>
+                                 <td>{attri.position_held}</td>
+                              </tr>
+                        )}
+                              
+
+                        </tbody>
+                     </table>
+                    </Box>
+                </Box>
+                
+
+
+
+
+                {/* Ward Surgical and Non-Surgical Supplies Table */}
+                <Box sx={{ 
+                    height: '45vh',
+                    width: '83%',
+                    backgroundColor: 'white',
+                    marginLeft: '12%',
+                    marginRight: '2%',
+                    marginTop: '2%',
+                    padding: 0,
+                    display: 'flex',
+                    flexWrap: 'wrap',
+                    alignContent: 'flex-start',
+                    border: '0px solid black'
+                }}>
+                    <Typography variant='h4'sx={{
+                        fontFamily: 'Nunito Sans, Sans-serif',
+                        marginBottom: '1%',
+                        fontWeight: 'bold',
+                        backgroundColor: '#E7F3F5',
+                        width: '100%'
+                    }}>
+                        Qualifications
+                    </Typography>
+                    {/* Buttons & Input */}
+                    <Box sx={{
+                        height: '4vh',
+                        width: '100%',
+                        backgroundColor: 'white',
+                        display: 'flex',
+                        paddingLeft: '2%'
+                    }}>
+                         <SearchIcon sx={{ color: 'action.active', mr: 0, my: 2.6}} />
+                         <TextField size='medium' id="input-with-sx" label="Enter ward number" variant="standard" />
+
+                         <Button sx={{
+                            height: '70%',
+                            width: '7%',
+                            marginLeft: '2%',
+                            marginTop: '0.5%',
+                            backgroundColor:'#26ABAA',
+                            fontFamily: 'Nunito Sans, Sans-serif',
+                            color: 'white'
+                         }}>
+                            Search
+                         </Button>
+                         <Button
+                           sx={{
+                              height: '70%',
+                              width: '7%',
+                              marginLeft: '54%',
+                              marginTop: '0.5%',
+                              backgroundColor: '#26ABAA',
+                              fontFamily: 'Nunito Sans, Sans-serif',
+                              color: 'white'
+                           }}
+                           onClick={openSurgicalModal}
+                           >
+                           Add
+                           </Button>   
+
+                           <Modal
+                           open={addSurgicalSuppliesModal}
+                           onClose={closeSurgicalModal}
+                           aria-labelledby="modal-modal-title"
+                           aria-describedby="modal-modal-description"
+                           >
+                           <Box
+                              sx={{
+                                 position: 'absolute',
+                                 top: '50%',
+                                 left: '50%',
+                                 transform: 'translate(-50%, -50%)',
+                                 width: 400,
+                                 bgcolor: 'background.paper',
+                                 boxShadow: 24,
+                                 p: 4,
+                                 borderRadius: 8
+                              }}
+                           >
+                              <Typography textAlign={'center'}>Add Staff Qualification</Typography>
+                              <TextField
+                              name="ward_number"
+                              label="Staff Number"
+                              value={input1}
+                              onChange={text1}
+                              fullWidth
+                              margin="normal"
+                           />
+                           <TextField type='date'
+                              name="item_number"
+                              label="Date of Qualification"
+                              value={input2}
+                              onChange={text2}
+                              fullWidth
+                              margin="normal"
+                           />
+                           <TextField
+                              name="ward_number"
+                              label="Type"
+                              value={input3}
+                              onChange={text3}
+                              fullWidth
+                              margin="normal"
+                           />
+                           <TextField
+                              name="item_number"
+                              label="Name of Institution"
+                              value={input4}
+                              onChange={text4}
+                              fullWidth
+                              margin="normal"
+                           />
+
+                              <Button onClick={handleAddSurgicalModal} variant="contained" color="primary">
+                                 Submit
+                              </Button>
+                           </Box>
+
+                           </Modal>
+
+                           <Button
+                        sx={{
+                           height: '70%',
+                           width: '7%',
+                           marginLeft: '2%',
+                           marginTop: '0.5%',
+                           backgroundColor: '#26ABAA',
+                           fontFamily: 'Nunito Sans, Sans-serif',
+                           color: 'white'
+                        }}
+                        onClick={() => openStaffQual()}
+                        >
+                        Update
+                        </Button>
+
+                        <Modal
+                              open={updateStaffQualModa}
+                              onClose={closeStaffQual}
+                              aria-labelledby="modal1-modal-title"
+                              aria-describedby="modal1-modal-description"
+                              >
+                              <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: 400, bgcolor: 'background.paper', boxShadow: 24, p: 4 }}>
+                                 <Typography textAlign={'center'}>Update Staff Qualification</Typography>
+                                 <TextField
+                              name="ward_number"
+                              label="Staff Number"
+                              value={input1}
+                              onChange={text1}
+                              fullWidth
+                              margin="normal"
+                           />
+                           <TextField type='date'
+                              name="item_number"
+                              label="Date of Qualification"
+                              value={input2}
+                              onChange={text2}
+                              fullWidth
+                              margin="normal"
+                           />
+                           <TextField
+                              name="ward_number"
+                              label="Type"
+                              value={input3}
+                              onChange={text3}
+                              fullWidth
+                              margin="normal"
+                           />
+                           <TextField
+                              name="item_number"
+                              label="Name of Institution"
+                              value={input4}
+                              onChange={text4}
+                              fullWidth
+                              margin="normal"
+                           />
+                                 <Button onClick={handleQualificationUpdate} >Update</Button>
+                              </Box>
+                              </Modal>
+                           <Button sx={{
+                            height: '70%',
+                            width: '7%',
+                            marginLeft: '2%',
+                            marginTop: '0.5%',
+                            backgroundColor:'#FC696A',
+                            fontFamily: 'Nunito Sans, Sans-serif',
+                            color: 'white'
+                         }}
+                         onClick={openDeleteSurgicalModal}>
+                            Delete
+                         </Button>
+
+                        <Modal
+                        open={deleteSurgicalSuppliesModal}
+                        onClose={closeDeleteSurgicalModal}
+                        aria-labelledby="modal-modal-title"
+                        aria-describedby="modal-modal-description"
+                        >
+                        <Box
+                           sx={{
+                              position: 'absolute',
+                              top: '50%',
+                              left: '50%',
+                              transform: 'translate(-50%, -50%)',
+                              width: 400,
+                              bgcolor: 'background.paper',
+                              boxShadow: 24,
+                              p: 4,
+                              borderRadius: 8
+                           }}
+                        >
+                              <Typography textAlign={'center'}>Delete Staff Qualification</Typography>
+                              <TextField
+                              name="ward_number"
+                              label="Staff Number"
+                              value={input1}
+                              onChange={text1}
+                              fullWidth
+                              margin="normal"
+                           />
+                           
+
+                           <Button onClick={handleDeleteSurgicalModal} variant="contained" color="primary">
+                              Delete
+                           </Button>
+                        </Box>
+                        </Modal>
+                    </Box>
+                    
+                    {/* Display for Surgical Supplies stable */}
+
+                    <Box className='scrollable-container' sx={{
+                        backgroundColor: 'white',
+                        height: '37vh',
+                        width: '100%',
+                        
+                    }}>
+                     <table className="ward-content-table">
+                        <thead>
+                           <tr>
+                              <th>Staff Number</th>
+                              <th>First Name</th>
+                              <th>Last Name</th>
+                              <th>Date of Qualification</th>
+                              <th>Type</th>
+                              <th>Name of Institution</th>
+                             
+                           </tr>
+                        </thead>
+
+                        <tbody>
+                          { wardSuppliesTable.map((staffQual) => 
+                           <tr key={staffQual.staff_num}>
+                              <td>{staffQual.staff_num}</td>
+                              <td>{staffQual.first_name}</td>
+                              <td>{staffQual.last_name}</td>
+                              <td>{staffQual.date_of_qualification}</td>
+                              <td>{staffQual.type}</td>
+                              <td>{staffQual.name_of_institution}</td>
+                           </tr>
+                          ) }
+
+                        </tbody>
+                     </table>
+                    </Box>
+                </Box>
+
+
+
+
+
+                {/* Ward Pharmaceutical Supplies Table */}
+                <Box sx={{ 
+                    height: '45vh',
+                    width: '83%',
+                    backgroundColor: 'white',
+                    marginLeft: '12%',
+                    marginRight: '2%',
+                    marginTop: '2%',
+                    padding: 0,
+                    display: 'flex',
+                    flexWrap: 'wrap',
+                    alignContent: 'flex-start',
+                    border: '0px solid black'
+                }}>
+                    <Typography variant='h4'sx={{
+                        fontFamily: 'Nunito Sans, Sans-serif',
+                        marginBottom: '1%',
+                        fontWeight: 'bold',
+                        backgroundColor: '#E7F3F5',
+                        width: '100%'
+                    }}>
+                        Work Experience 
+                    </Typography>
+                    {/* Buttons & Input */}
+                    <Box sx={{
+                        height: '4vh',
+                        width: '100%',
+                        backgroundColor: 'white',
+                        display: 'flex',
+                        paddingLeft: '2%'
+                    }}>
+                         <SearchIcon sx={{ color: 'action.active', mr: 0, my: 2.6}} />
+                         <TextField size='medium' id="input-with-sx" label="Enter ward number" variant="standard" />
+
+                         <Button sx={{
+                            height: '70%',
+                            width: '7%',
+                            marginLeft: '2%',
+                            marginTop: '0.5%',
+                            backgroundColor:'#26ABAA',
+                            fontFamily: 'Nunito Sans, Sans-serif',
+                            color: 'white'
+                         }}>
+                            Search
+                         </Button>
+                         <Button
+                           sx={{
+                              height: '70%',
+                              width: '7%',
+                              marginLeft: '54%',
+                              marginTop: '0.5%',
+                              backgroundColor: '#26ABAA',
+                              fontFamily: 'Nunito Sans, Sans-serif',
+                              color: 'white'
+                           }}
+                           onClick={openAddPharmaceuticalModal}
+                           >
+                           Add
+                           </Button>
+
+                           <Modal
+                           open={addPharmaceuticalModal}
+                           onClose={closeAddPharmaceuticalModal}
+                           aria-labelledby="modal-modal-title"
+                           aria-describedby="modal-modal-description"
+                           >
+                           <Box
+                              sx={{
+                                 position: 'absolute',
+                                 top: '50%',
+                                 left: '50%',
+                                 transform: 'translate(-50%, -50%)',
+                                 width: 400,
+                                 bgcolor: 'background.paper',
+                                 boxShadow: 24,
+                                 p: 4,
+                                 borderRadius: 8
+                              }}
+                           >
+                              <Typography textAlign={'center'}>Add Staff Work Experience</Typography>
+                              <TextField
+                                 name="ward_number"
+                                 label="Staff Number"
+                                 value={input1}
+                                 onChange={text1}
+                                 fullWidth
+                                 margin="normal"
+                              />
+                              <TextField type='date'
+                                 name="ward_name"
+                                 label="Start Date"
+                                 value={input2}
+                                 onChange={text2}
+                                 fullWidth
+                                 margin="normal"
+                              />
+                               <TextField  type='date'
+                                 name="ward_number"
+                                 label="Finish Date"
+                                 value={input3}
+                                 onChange={text3}
+                                 fullWidth
+                                 margin="normal"
+                              />
+                              <TextField
+                                 name="ward_name"
+                                 label="Position"
+                                 value={input4}
+                                 onChange={text4}
+                                 fullWidth
+                                 margin="normal"
+                              />
+                               <TextField
+                                 name="ward_name"
+                                 label="Name of Organization"
+                                 value={input5}
+                                 onChange={text5}
+                                 fullWidth
+                                 margin="normal"
+                              />
+
+                              <Button onClick={handleAddPharmaceuticalModal} variant="contained" color="primary">
+                                 Submit
+                              </Button>
+                           </Box>
+                           </Modal>
+                         
+                           <Button
+                        sx={{
+                           height: '70%',
+                           width: '7%',
+                           marginLeft: '2%',
+                           marginTop: '0.5%',
+                           backgroundColor: '#26ABAA',
+                           fontFamily: 'Nunito Sans, Sans-serif',
+                           color: 'white'
+                        }}
+                        onClick={() => openWEModal()}
+                        >
+                        Update
+                        </Button>
+
+                        <Modal
+                              open={updateWE}
+                              onClose={closeWEModal}
+                              aria-labelledby="modal1-modal-title"
+                              aria-describedby="modal1-modal-description"
+                              >
+                              <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: 400, bgcolor: 'background.paper', boxShadow: 24, p: 4 }}>
+                                 <Typography textAlign={'center'}>Update Staff Work Experience</Typography>
+                                 <TextField
+                                 name="ward_number"
+                                 label="Staff Number"
+                                 value={input1}
+                                 onChange={text1}
+                                 fullWidth
+                                 margin="normal"
+                              />
+                              <TextField  type='date'
+                                 name="ward_name"
+                                 label="Start Date"
+                                 value={input2}
+                                 onChange={text2}
+                                 fullWidth
+                                 margin="normal"
+                              />
+                               <TextField  type='date'
+                                 name="ward_number"
+                                 label="Finish Date"
+                                 value={input3}
+                                 onChange={text3}
+                                 fullWidth
+                                 margin="normal"
+                              />
+                              <TextField
+                                 name="ward_name"
+                                 label="Position"
+                                 value={input4}
+                                 onChange={text4}
+                                 fullWidth
+                                 margin="normal"
+                              />
+                               <TextField
+                                 name="ward_name"
+                                 label="Name of Organization"
+                                 value={input5}
+                                 onChange={text5}
+                                 fullWidth
+                                 margin="normal"
+                              />
+                                 <Button onClick={handleWEupdate} >Update</Button>
+                              </Box>
+                              </Modal>
+                         <Button sx={{
+                            height: '70%',
+                            width: '7%',
+                            marginLeft: '2%',
+                            marginTop: '0.5%',
+                            backgroundColor:'#FC696A',
+                            fontFamily: 'Nunito Sans, Sans-serif',
+                            color: 'white'
+                         }}
+                         onClick={openDeletePharmaceuticalModal}>
+                            Delete
+                         </Button>
+                         <Modal
+                           open={deletePharmaceuticalModal}
+                           onClose={closeDeletePharmaceuticalModal}
+                           aria-labelledby="modal-modal-title"
+                           aria-describedby="modal-modal-description"
+                           >
+                           <Box
+                              sx={{
+                                 position: 'absolute',
+                                 top: '50%',
+                                 left: '50%',
+                                 transform: 'translate(-50%, -50%)',
+                                 width: 400,
+                                 bgcolor: 'background.paper',
+                                 boxShadow: 24,
+                                 p: 4,
+                                 borderRadius: 8
+                              }}
+                           >
+                              <Typography textAlign={'center'}>Delete Staff Work Experience</Typography>
+                              <TextField
+                                 name="ward_number"
+                                 label="Staff Number"
+                                 value={input1}
+                                 onChange={text1}
+                                 fullWidth
+                                 margin="normal"
+                              />
+
+                              <Button onClick={handleDeletePharmaceuticalModal} variant="contained" color="primary">
+                                 Delete
+                              </Button>
+                           </Box>
+                           </Modal>
+                    </Box>
+                    
+                    {/* Display for Staff stable */}
+
+                    <Box className='scrollable-container' sx={{
+                        backgroundColor: 'white',
+                        height: '37vh',
+                        width: '100%',
+                        
+                    }}>
+                     <table className="ward-content-table">
+                        <thead>
+                           {/* Destucture ang JSON */}
+                           
+                           <tr>
+                              <th>Staff Number</th>
+                              <th>First Name</th>
+                              <th>Last Name</th>
+                              <th>Start Date</th>
+                              <th>Finish Date</th>
+                              <th>Role</th>
+                              <th>Name of Org.</th>
+                             
+                           </tr>
+                        </thead>
+
+                        <tbody>
+                           {wardPharmaceuticalTable.map((wardphar) => 
+
+                           <tr key={wardphar.staff_num}>
+                              <td>{wardphar.staff_num}</td>
+                              <td>{wardphar.first_name}</td>
+                              <td>{wardphar.last_name}</td>
+                              <td>{wardphar.start_date}</td>
+                              <td>{wardphar.finish_date}</td>
+                              <td>{wardphar.role}</td>
+                              <td>{wardphar.name_of_org}</td>
+                           </tr>
+                           )}
+
+                        </tbody>
+                     </table>
+                    </Box>
+                </Box>
+                
+                 {/* Ward Pharmaceutical Supplies Requisition Container */}
+                 <Box sx={{ 
+                    height: '45vh',
+                    width: '83%',
+                    backgroundColor: 'white',
+                    marginLeft: '12%',
+                    marginRight: '2%',
+                    marginTop: '2%',
+                    padding: 0,
+                    display: 'flex',
+                    flexWrap: 'wrap',
+                    alignContent: 'flex-start',
+                    border: '0px solid black'
+                }}>
+                    <Typography variant='h4'sx={{
+                        fontFamily: 'Nunito Sans, Sans-serif',
+                        marginBottom: '1%',
+                        fontWeight: 'bold',
+                        backgroundColor: '#E7F3F5',
+                        width: '100%'
+                    }}>
+                       Employment Contract
+                    </Typography>
+                    {/* Buttons & Input */}
+                    <Box sx={{
+                        height: '4vh',
+                        width: '100%',
+                        backgroundColor: 'white',
+                        display: 'flex',
+                        paddingLeft: '2%'
+                    }}>
+                         <SearchIcon sx={{ color: 'action.active', mr: 0, my: 2.6}} />
+                         <TextField size='medium' id="input-with-sx" label="Enter ward number" variant="standard" />
+
+                         <Button sx={{
+                            height: '70%',
+                            width: '7%',
+                            marginLeft: '2%',
+                            marginTop: '0.5%',
+                            backgroundColor:'#26ABAA',
+                            fontFamily: 'Nunito Sans, Sans-serif',
+                            color: 'white'
+                         }}>
+                            Search
+                         </Button>
+                         <Button
+                           sx={{
+                              height: '70%',
+                              width: '7%',
+                              marginLeft: '54%',
+                              marginTop: '0.5%',
+                              backgroundColor: '#26ABAA',
+                              fontFamily: 'Nunito Sans, Sans-serif',
+                              color: 'white'
+                           }}
+                           onClick={openAddPharmaRequestModal}
+                           >
+                           Add
+                           </Button>
+                           <Modal
+                              open={addPharmaRequestModal}
+                              onClose={closeAddPharmaRequestModal}
+                              aria-labelledby="modal1-modal-title"
+                              aria-describedby="modal1-modal-description"
+                              >
+                              <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: 400, bgcolor: 'background.paper', boxShadow: 24, p: 4 }}>
+                              <Typography textAlign={'center'}>Add Employment Contract</Typography>
+                                 <TextField
+                                    label="Staff Number"
+                                    value={input1}
+                                    onChange={text1}
+                                    fullWidth
+                                    margin="normal"
+                                 />
+                                 <TextField
+                                    label="Work Hours"
+                                    value={input2}
+                                    onChange={text2}
+                                    fullWidth
+                                    margin="normal"
+                                 />
+                                 <TextField
+                                    label="Type of Contract"
+                                    value={input3}
+                                    onChange={text3}
+                                    fullWidth
+                                    margin="normal"
+                                 />
+                                  <TextField
+                                    label="Type of Salary Payment"
+                                    value={input4}
+                                    onChange={text4}
+                                    fullWidth
+                                    margin="normal"
+                                 />
+                                 <Button onClick={handleAddPharmaRequest}>Submit</Button>
+                              </Box>
+                              </Modal>
+                           <Button
+                        sx={{
+                           height: '70%',
+                           width: '7%',
+                           marginLeft: '2%',
+                           marginTop: '0.5%',
+                           backgroundColor: '#26ABAA',
+                           fontFamily: 'Nunito Sans, Sans-serif',
+                           color: 'white'
+                        }}
+                        onClick={openUpdatePharmaRequestModal}
+                        >
+                        Update
+                        </Button>
+                        <Modal
+                              open={updatePharmaRequestModal}
+                              onClose={closeUpdatePharmaRequestModal}
+                              aria-labelledby="modal1-modal-title"
+                              aria-describedby="modal1-modal-description"
+                              >
+                              <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: 400, bgcolor: 'background.paper', boxShadow: 24, p: 4 }}>
+                              <Typography textAlign={'center'}>Update Staff Employment Contract</Typography>
+                                <TextField
+                                    label="Staff Number"
+                                    value={input1}
+                                    onChange={text1}
+                                    fullWidth
+                                    margin="normal"
+                                 />
+                                 <TextField
+                                    label="Work Hours"
+                                    value={input2}
+                                    onChange={text2}
+                                    fullWidth
+                                    margin="normal"
+                                 />
+                                 <TextField
+                                    label="Type of Contract"
+                                    value={input3}
+                                    onChange={text3}
+                                    fullWidth
+                                    margin="normal"
+                                 />
+                                  <TextField
+                                    label="Type of Salary Payment"
+                                    value={input4}
+                                    onChange={text4}
+                                    fullWidth
+                                    margin="normal"
+                                 />
+                                 <Button onClick={handleUpdatePharmaRequest}>Update</Button>
+                              </Box>
+                              </Modal>
+                         <Button sx={{
+                            height: '70%',
+                            width: '7%',
+                            marginLeft: '2%',
+                            marginTop: '0.5%',
+                            backgroundColor:'#FC696A',
+                            fontFamily: 'Nunito Sans, Sans-serif',
+                            color: 'white'
+                         }}
+                         onClick={openDeletePharmaRequestModal}>
+                            Delete
+                         </Button>
+                         <Modal
+                              open={deletePharmaRequestModal}
+                              onClose={closeDeletePharmaRequestModal}
+                              aria-labelledby="modal1-modal-title"
+                              aria-describedby="modal1-modal-description"
+                              >
+                              <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: 400, maxHeight: 400, bgcolor: 'background.paper', boxShadow: 24, p: 4 }}>
+                              <Typography textAlign={'center'}>Delete Staff Employment Contract</Typography>                                 <TextField
+                                    label="Staff Number"
+                                    value={input1}
+                                    onChange={text1}
+                                    fullWidth
+                                    margin="normal"
+                                 />
+                                 <Button onClick={handleDeletePharmaRequest}>Delete</Button>
+                              </Box>
+                              </Modal>
+                         
+                    </Box>
+                    
+                    {/* Display for Staff stable */}
+
+                    <Box className='scrollable-container' sx={{
+                        backgroundColor: 'white',
+                        height: '37vh',
+                        width: '100%',  
+                    }}>
+                        <table className="ward-content-table">
+                        <thead>
+                           <tr>
+                              <th>Staff Number</th>
+                              <th>First Name</th>
+                              <th>Last Name</th>
+                              <th>Work Hours</th>
+                              <th>Type of Contrcat</th>
+                              <th>Type of Salary Payment</th>
+                             
+                           </tr>
+                        </thead>
+
+                        <tbody>
+                           {
+                              wardPharmRequestTable.map((staffEC) => 
+                           <tr key={staffEC.staff_num}>
+                              <td>{staffEC.staff_num}</td>
+                              <td>{staffEC.first_name}</td>
+                              <td>{staffEC.last_name}</td>
+                              <td>{staffEC.work_hours}</td>
+                              <td>{staffEC.type_of_contract}</td>
+                              <td>{staffEC.type_of_salary_payment}</td>
+                           </tr>
+                           )}
+
+                        </tbody>
+                     </table>
+                    </Box>
+                </Box>
+
+
+                 {/* Ward Surgical and Non-surgical Supplies Requisition Container */}
+                 <Box sx={{ 
+                    height: '45vh',
+                    width: '83%',
+                    backgroundColor: 'white',
+                    marginLeft: '12%',
+                    marginRight: '2%',
+                    marginTop: '2%',
+                    padding: 0,
+                    display: 'flex',
+                    flexWrap: 'wrap',
+                    alignContent: 'flex-start',
+                    border: '0px solid black'
+                }}>
+                    <Typography variant='h4'sx={{
+                        fontFamily: 'Nunito Sans, Sans-serif',
+                        marginBottom: '1%',
+                        fontWeight: 'bold',
+                        backgroundColor: '#E7F3F5',
+                        width: '100%'
+                    }}>
+                       Staff Allocation
+                    </Typography>
+                    {/* Buttons & Input */}
+                    <Box sx={{
+                        height: '4vh',
+                        width: '100%',
+                        backgroundColor: 'white',
+                        display: 'flex',
+                        paddingLeft: '2%'
+                    }}>
+                         <SearchIcon sx={{ color: 'action.active', mr: 0, my: 2.6}} />
+                         <TextField size='medium' id="input-with-sx" label="Enter ward number" variant="standard" />
+
+                         <Button sx={{
+                            height: '70%',
+                            width: '7%',
+                            marginLeft: '2%',
+                            marginTop: '0.5%',
+                            backgroundColor:'#26ABAA',
+                            fontFamily: 'Nunito Sans, Sans-serif',
+                            color: 'white'
+                         }}>
+                            Search
+                         </Button>
+                         <Button
+                           sx={{
+                              height: '70%',
+                              width: '7%',
+                              marginLeft: '54%',
+                              marginTop: '0.5%',
+                              backgroundColor: '#26ABAA',
+                              fontFamily: 'Nunito Sans, Sans-serif',
+                              color: 'white'
+                           }}
+                           onClick={openAddSurgicalRequestModal}
+                           >
+                           Add
+                           </Button>
+
+                           
+                           <Modal
+                           open={addSurgicalRequestModal}
+                           onClose={closeAddSurgicalRequestModal}
+                           aria-labelledby="modal-modal-title"
+                           aria-describedby="modal-modal-description"
+                           >
+                           <Box
+                              sx={{
+                                 position: 'absolute',
+                                 top: '50%',
+                                 left: '50%',
+                                 transform: 'translate(-50%, -50%)',
+                                 width: 400,
+                                 bgcolor: 'background.paper',
+                                 boxShadow: 24,
+                                 p: 4,
+                                 borderRadius: 8
+                              }}
+                           >
+                              <Typography textAlign={'center'}>Add Staff Allocation</Typography>
+                             <TextField
+                                    label="Staff Number"
+                                    value={input1}
+                                    onChange={text1}
+                                    fullWidth
+                                    margin="normal"
+                                 />
+                                 <TextField
+                                    label="Ward Number"
+                                    value={input2}
+                                    onChange={text2}
+                                    fullWidth
+                                    margin="normal"
+                                 />
+                                 <TextField
+                                    label="Shift"
+                                    value={input3}
+                                    onChange={text3}
+                                    fullWidth
+                                    margin="normal"
+                                 />
+
+                              <Button onClick={handleAddSurgicalRequest} variant="contained" color="primary">
+                                 Submit
+                              </Button>
+                           </Box>
+                           </Modal>
+                           <Button
+                        sx={{
+                           height: '70%',
+                           width: '7%',
+                           marginLeft: '2%',
+                           marginTop: '0.5%',
+                           backgroundColor: '#26ABAA',
+                           fontFamily: 'Nunito Sans, Sans-serif',
+                           color: 'white'
+                        }}
+                        onClick={openUpdateSurgicalRequestModal}>
+                        Update
+                        </Button>
+
+                        {/* Modal for Updating Ward Surgical */}
+                        <Modal
+                              open={updateSurgicalRequestModal}
+                              onClose={closeUpdateSurgicalRequestModal}
+                              aria-labelledby="modal1-modal-title"
+                              aria-describedby="modal1-modal-description"
+                              >
+                              <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: 400, bgcolor: 'background.paper', boxShadow: 24, p: 4 }}>
+                              <Typography textAlign={'center'}>Update Staff Allocation</Typography>
+                              <TextField
+                                    label="Staff Number"
+                                    value={input1}
+                                    onChange={text1}
+                                    fullWidth
+                                    margin="normal"
+                                 />
+                                 <TextField
+                                    label="Ward Number"
+                                    value={input2}
+                                    onChange={text2}
+                                    fullWidth
+                                    margin="normal"
+                                 />
+                                 <TextField
+                                    label="Shift"
+                                    value={input3}
+                                    onChange={text3}
+                                    fullWidth
+                                    margin="normal"
+                                 />
+                                 <Button onClick={handleUpdateSurgicalRequest}>Update</Button>
+                              </Box>
+                              </Modal>
+                         <Button sx={{
+                            height: '70%',
+                            width: '7%',
+                            marginLeft: '2%',
+                            marginTop: '0.5%',
+                            backgroundColor:'#FC696A',
+                            fontFamily: 'Nunito Sans, Sans-serif',
+                            color: 'white'
+                         }}
+                         onClick={openDeleteSurgicalRequestModal}>
+                            Delete
+                         </Button>
+
+                         <Modal
+                              open={deleteSurgicalRequestModal}
+                              onClose={closeDeleteSurgicalRequestModal}
+                              aria-labelledby="modal1-modal-title"
+                              aria-describedby="modal1-modal-description"
+                              >
+                              <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: 400, maxHeight: 400, bgcolor: 'background.paper', boxShadow: 24, p: 4 }}>
+                              <Typography textAlign={'center'}>Delete Surgical/Nonsurgical Request</Typography>
+                                 <TextField
+                                    label="Staff Number"
+                                    value={input1}
+                                    onChange={text1}
+                                    fullWidth
+                                    margin="normal"
+                                 />
+                                 <Button onClick={handleDeleteSurgicalRequest}>Delete</Button>
+                              </Box>
+                              </Modal>
+                    </Box>
+                    
+                    {/* Display for Staff stable */}
+
+                    <Box className='scrollable-container' sx={{
+                        backgroundColor: 'white',
+                        height: '37vh',
+                        width: '100%',
+                        
+                    }}>
+                     <table className="ward-content-table">
+                        <thead>
+                           <tr>
+                              <th>Staff Number</th>
+                              <th>First Name</th>
+                              <th>Last Name</th>
+                              <th>Ward Number</th>
+                              <th>Ward Name</th>
+                              <th>Shift</th>
+                             
+                           </tr>
+                        </thead>
+
+                        <tbody>
+                           {
+                              wardSurgRequestTable.map((staffAloc) => 
+                           <tr key={staffAloc.staff_num}>
+                              <td>{staffAloc.staff_num}</td>
+                              <td>{staffAloc.first_name}</td>
+                              <td>{staffAloc.last_name}</td>
+                              <td>{staffAloc.ward_num}</td>
+                              <td>{staffAloc.ward_name}</td>
+                              <td>{staffAloc.shift}</td>
+                           </tr>
+                           )}
+
+                        </tbody>
+                     </table>
+                    </Box>
+                </Box>
+            </Box>
+        </>
+    );
 }
 
 export default Staff;
